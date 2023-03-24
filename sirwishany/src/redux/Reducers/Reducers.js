@@ -1,8 +1,6 @@
 const initialstate={
     city: "Agra",
     state: "Uttar Pradesh"
-
-
 }
 const reducer = (state=initialstate,action)=>{
     if (action.type==='change'){
