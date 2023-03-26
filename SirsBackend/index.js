@@ -11,7 +11,8 @@ app.use(express.json())
 
 //app.use('/api/city',require('./Routes/cities.js'))
 app.use('/api',require('./Routes/cities'))
-  
+app.use('/user',require('./Routes/UserLogin'))
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
