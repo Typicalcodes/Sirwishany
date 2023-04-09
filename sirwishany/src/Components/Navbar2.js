@@ -103,7 +103,7 @@ const Navbar2 = () => {
               return SearchTerm && name.startsWith(SearchTerm);
             })
             .map((item) => (
-              <div key={item.id} onClick={()=>onClickItem(item.name,item.state,item.id,item.services)} className="flex px-[8px] py-[4px] bg-white border w-full flex-col">
+              <div key={item.id} onClick={()=>onClickItem(item.name,item.state,item.id,item.services)} className="textflex px-[8px] py-[4px] bg-white border w-full flex-col">
                 {item.name}, {item.state}
               </div>
             ))}
