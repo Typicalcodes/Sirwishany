@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import * as all from "../import";
+import {Link} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
 const Itembox = () => {
@@ -45,12 +46,13 @@ const Itembox = () => {
         }}
         return (
           <div key={item} className="space-x-[8px] py-[8px] flex ">
+            <Link to={`/${item}`}>
             <div className="flex flex-col text-center relative px-[8px] py-[8px] items-center active:bg-[#f5f5f5]  cursor-pointer w-[96px] h-[96px]">
               <Icon icon={`${type}`} width="64" height="64" color="#6B84DD"/>
               <span className=" font-merrisans text-[14px] font-semibold">
                 {item}
               </span>
-            </div>
+            </div></Link>
           </div>
         );
       })}
