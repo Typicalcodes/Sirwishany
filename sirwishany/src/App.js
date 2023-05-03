@@ -12,7 +12,7 @@ function App() {
   const logn = useSelector((state) => state.loginopen);
   console.log(logn);
   return (
-    <div className="relative bg-gray-100 ">
+    <div className="relative bg-gray-100">
       <Routes>
         <Route
           path="/"

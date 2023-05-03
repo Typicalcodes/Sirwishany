@@ -8,8 +8,6 @@ const Navbar2 = () => {
   const cityselect = bindActionCreators(changeCity, dispatch)
   const logindone = bindActionCreators(openlogin, dispatch)
   const ChangeServices = bindActionCreators(changeService, dispatch)
-  
-
 
   const [city, setCity] = useState([
     { name: "Agra", id: "-1" },
@@ -22,7 +20,7 @@ const Navbar2 = () => {
       method: "GET",
     });
     const json = await response.json();
-  
+    console.log(json)
     setCity(json);
     
   };
@@ -57,7 +55,7 @@ const Navbar2 = () => {
     console.log(showInput);
   };
   return (
-    <div className="space-y-[8px] px-[8px] pt-[8px] ">
+    <div className="space-y-[8px] px-[8px] pt-[8px] bg-white ">
       <div className="flex items-center justify-between ">
         <div className="flex flex-col">
           <span className="font-merrisans pb-0 bottom-0 text-[29px] font-extrabold mb-0 text-[#6B84DD]">

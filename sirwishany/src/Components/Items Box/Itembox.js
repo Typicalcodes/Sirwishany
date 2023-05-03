@@ -23,7 +23,7 @@ const Itembox = () => {
   }, [selectCity]);
 
   return (
-    <div className="px-[8px] flex overflow-x-auto scroll-smooth">
+    <div className="px-[8px] flex overflow-x-auto scroll-smooth bg-white">
       {services.map((item) => {
         if(item){
         if (item === "Carpenter") {
