@@ -1,29 +1,15 @@
-import React, { useEffect, useState, useMemo } from "react";
-import * as all from "../import";
+import React from "react";
+
 import {Link} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
 const Itembox = () => {
-  const [icon, setIcon] = useState("");
-  const [construct, setConstruct] = useState(false);
 
-  var pos = useSelector((state) => state.place);
   var services = useSelector((state) => state.changeServices.services);
-  var setSe = new Set(pos.services);
-  console.log(services);
-  const selectCity = () => {
-    if (setSe.has(pos.city)) {
-      setConstruct(false);
-    } else if (pos.city === "Agra" || pos.city === "Mumbai") {
-      setConstruct(true);
-    }
-  };
-  useEffect(() => {
-    selectCity();
-  }, [selectCity]);
+ 
 
   return (
-    <div className="px-[8px] flex overflow-x-auto scroll-smooth bg-white">
+    <div className="px-[8px] flex overflow-x-auto scroll-smooth custom-scrollbar bg-white">
       {services.map((item) => {
         if(item){
         if (item === "Carpenter") {

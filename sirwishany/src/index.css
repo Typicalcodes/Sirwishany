@@ -5,3 +5,12 @@
 .react-tel-input .form-control {
     @apply !w-full py-6 !text-base ;
 }
+.custom-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    background-color: transparent;
+  }
+  
+.custom-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer and Edge */
+  }

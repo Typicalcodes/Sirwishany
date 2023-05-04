@@ -13,7 +13,7 @@ const Itemsshow = () => {
 
   <ArrowBackSharpIcon onClick={() => navigate(-1)} className="absolute top-[13px] left-[12px]" fontSize="large"/>
       <div className=" absolute inset-0 -z-20">
-        <img src={Carpenter} />
+        <img src={Carpenter} alt="Ram Ram"/>
       </div>
       
     </div>
