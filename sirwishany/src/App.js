@@ -22,7 +22,7 @@ function App() {
 
         <Route exact path="/carpenter" Component={itemsshow} />
       </Routes>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

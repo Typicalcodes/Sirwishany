@@ -1,9 +1,22 @@
-import React from 'react'
+import React,{useRef,useState,useEffect} from 'react'
 
 const Featurepage = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setCurrentIndex((currentIndex + 1) % 4);
+    }, 5000);
+    console.log(currentIndex)
+    return () => clearInterval(timerRef.current);
+  }, [currentIndex]);
   return (
-    <div className="bg-white px-[8px] pt-5 space-x-4 py-[8px] mt-2 mb-2 custom-scrollbar  flex overflow-x-auto overflow-hidden scroll-smooth" alt="feature pages">
-    <div className="border rounded-lg border-[#6B84DD] pt-[8px] space-y-2 px-[12px] min-w-[210px] w-[210px] h-[140px] items-center text-center">
+
+    
+  <div className="bg-white px-[8px] pt-5 space-x-4 py-[8px] mt-2 mb-2 custom-scrollbar  flex overflow-x-auto overflow-hidden scroll-smooth relative" alt="feature pages">
+    <div className={`border rounded-lg border-[#6B84DD] pt-[8px] space-y-2 px-[12px] min-w-[210px] w-[210px] h-[140px] items-center text-center transform -translate-x-[${currentIndex*120
+    }px]`}>
       <span className="text-black font-semibold text-xl leading-10">
         Bargain Your Way
       </span>

@@ -9,7 +9,7 @@ const ServicesList = () => {
     <div className="bg-white px-[8px] flex-col  py-[8px] mt-2 mb-2 ">
       <span className="text-xl font-semibold">Most Booked Services</span>
       <div className="space-x-1 custom-scrollbar  flex overflow-x-auto overflow-hidden scroll-smooth my-2">
-        {services.filter((item)=>{return "Carpenter"}).map((item) => {
+        {services.map((item) => {
           var image = `${item}.jpg`;
         
           return (
