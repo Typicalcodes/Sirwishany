@@ -12,6 +12,8 @@ app.use(express.json())
 //app.use('/api/city',require('./Routes/cities.js'))
 app.use('/api',require('./Routes/cities'))
 app.use('/user',require('./Routes/UserLogin'))
+//categoray api
+app.use('/cat',require('./Routes/CategoryMan'))
 
 
 app.listen(port, () => {

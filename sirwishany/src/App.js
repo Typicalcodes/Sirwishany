@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router-dom";
 import itemsshow from "./Components/Item Description/itemsshow";
 import Homepage from "./Components/Homepage/Homepage";
 import Footer from "./Components/Footer";
+import Categoryadd from "./Components/Homepage/Categoryadd";
 
 function App() {
   const logn = useSelector((state) => state.loginopen);
@@ -21,6 +22,7 @@ function App() {
         />
 
         <Route exact path="/carpenter" Component={itemsshow} />
+        <Route exact path="/addCat" Component={Categoryadd} />
       </Routes>
       <Footer />
     </div>
