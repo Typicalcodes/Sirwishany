@@ -14,17 +14,17 @@ function App() {
   const logn = useSelector((state) => state.loginopen);
   console.log(logn);
   return (
-    <div className="relative bg-gray-100">
+    <div className=" bg-gray-100">
       <Routes>
         <Route
           path="/"
           Component={Homepage}
         />
 
-        <Route exact path="/carpenter" Component={itemsshow} />
+        <Route exact path="/itemshow" Component={itemsshow} />
         <Route exact path="/addCat" Component={Categoryadd} />
       </Routes>
-      <Footer />
+      <Footer  />
     </div>
   );
 }

@@ -21,5 +21,13 @@ const changeService=(services)=>{
         })
     }
 }
+const changeCategory=(category)=>{
+    return (dispatch)=>{
+        dispatch({
+            type: 'changecategory',
+            payload: category
+        })
+    }
+}
 
-export {openlogin,changeCity,changeService};
+export {openlogin,changeCity,changeService,changeCategory};

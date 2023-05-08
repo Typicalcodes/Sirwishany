@@ -8,9 +8,12 @@ const upload = multer({ storage });
 router.post("/categoryAdd", upload.single("image"), async (req, res) => {
   const imageBuffer = req.file.buffer;
   const { name, Includes } = req.body;
-  const newCat = new Category({ name, image: imageBuffer, Includes });
+  console.log(typeof Includes)
+  const arrays= ["gaming chair","cars tip"]
+  const newCat = new Category({ name, image: imageBuffer, Includes : Includes});
   try {
     const newCats = await newCat.save();
+
     res.json(newCats);
   } catch (err) {
     console.log(err);

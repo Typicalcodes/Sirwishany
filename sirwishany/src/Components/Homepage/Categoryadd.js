@@ -3,24 +3,29 @@ const Categoryadd = () => {
   const [image, setImage] = useState(null);
   const [imgsrc, setImgsrc] = useState(null);
   const [name, setName] = useState("Electrician");
-  const [includes, setIncludes] = useState(["Fielinding","dfsdf"]);
+  const [includes, setIncludes] = useState([]);
   const handleImageSelect = async (event) => {
     const selectedImage = event.target.files[0];
     setImage(selectedImage);
   };
   const handleimgsubmit = async () => {
     setImgsrc(await URL.createObjectURL(image));
-    setImage(await dataURLtoBlob(imgsrc))
+    setImage(await dataURLtoBlob(imgsrc));
+    setIncludes(["Fiting of Bulbs,Switches,Fans and Other common electric appliances.","Fixing of Bulbs, Swithes, Fans etc", "Fiting of TV, Coolar etc"])
   };
   const handleCreateUser = async (name, image, Includes) => {
     const formData = new FormData();
+   
     formData.append("name", name);
-    formData.append("Includes", Includes);
+    for (let i = 0; i < Includes.length; i++) {
+      formData.append('Includes[]', Includes[i]);
+    }
+
     formData.append("image", image, "image.jpg");
     console.log(name, Includes);
     await fetch(`http://localhost:3000/cat/categoryAdd`, {
       method: "POST",
-
+      applicationType: JSON,
       body: formData,
     });
   };
