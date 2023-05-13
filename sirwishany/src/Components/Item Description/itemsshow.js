@@ -25,7 +25,7 @@ const Itemsshow = () => {
     );
     const json = await response.json();
     console.log(json);
-    console.log(json[0].image.data);
+    console.log(json[0].choices);
     const imageData = json[0].image.data; // your binary data
     const blob = new Blob([new Uint8Array(imageData)], { type: "image/*" }); // create a Blob object from binary data
     const imageUrl = URL.createObjectURL(blob); // create a URL for the Blob object
@@ -65,7 +65,9 @@ const Itemsshow = () => {
             <div className="px-[8px] py-[8px] flex flex-col bg-white ">
               <span className="font-bold opacity-90 text-2xl my-2">{data[0].name}</span>
               <div className=" grid gap-x-2 grid-cols-4">
-              
+              {json[0].choices.map(async (item)=>{
+                const response = fetch (`http://localhost:3000/cat/getCategory/${item}`)
+              })}
               </div>
               
               <button className="border-2 border-[#6B84DD] rounded-full hover:bg-[#6B84DD] hover:text-white  font-semibold text-2xl px-[8px] py-[12px] my-2">Book Now</button>
