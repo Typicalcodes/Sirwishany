@@ -2,7 +2,7 @@ import React, { useState } from "react";
 const Categoryadd = () => {
   const [image, setImage] = useState(null);
   const [imgsrc, setImgsrc] = useState(null);
-  const [svgu,setSvgu]=useState(null);
+  
   const [name, setName] = useState("Carpenter");
   const [choices,setChoices]=useState(["AC","WashingMachine"])
   const [includes, setIncludes] = useState(["Fiting of Bulbs,Switches,Fans and Other common electric appliances.","Fixing of Bulbs, Swithes, Fans etc", "Fiting of TV, Coolar etc"]);
@@ -49,8 +49,8 @@ const dataURLtoBlob = (dataURL) => {
 
 
 const [svg, setSvg] = useState(null);
-const [cname, setCName] = useState("AC");
-
+const [cname, setCName] = useState("Washing Machine");
+const [svgu,setSvgu] = useState(null);
 const handlesvg = async ()=>{
   setSvgu(await URL.createObjectURL(svg))
   setSvg(await dataURLtoBlob(svgu))
@@ -99,7 +99,7 @@ const handleSvgChange = (event) => {
       >
         Select Image
       </button>
-      <img src={imgsrc} />
+      <img src={imgsrc} alt="o not" />
       <button
         style={{
           background: "black",
@@ -117,10 +117,11 @@ const handleSvgChange = (event) => {
       </button>
     </div>
     <div>
-    <form onSubmit={handleUpload}>
+    <form >
         <input type="file" name="svg" accept="image/*" onChange={handleSvgChange} />
-        <button type="submit">Upload</button>
+        <button type="submit" onClick={handleUpload}>Upload</button>
       </form>
+
     <button style={{
           background: "black",
           color: "white",

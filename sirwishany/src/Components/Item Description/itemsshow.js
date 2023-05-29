@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams,useSearchParams } from "react-router-dom";
-import {AC,WashingMachine} from "./svgimports";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { AC, WashingMachine } from "./svgimports";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -9,14 +9,17 @@ import { changeCategory } from "../../redux/actionCreators/Index";
 import Loading from "./Loading";
 
 const Itemsshow = () => {
-  let [searchParams]= useSearchParams();
-  var item = searchParams.get('category')
-  const [svgs,setSvgs]=useState([]);
+  let [searchParams] = useSearchParams();
+  var item = searchParams.get("category");
+  const [svgs, setSvgs] = useState(null);
   const [cat, setCat] = useState(false);
   const [img, setImage] = useState(null);
-  var [data,setData] = useState(null);
+  var [data, setData] = useState(null);
   const navigate = useNavigate();
   const getingCatDetail = async (item) => {
+    try {
+      
+   
     const response = await fetch(
       `http://localhost:3000/cat/getCategory/${item}`,
       {
@@ -31,41 +34,53 @@ const Itemsshow = () => {
     const imageUrl = URL.createObjectURL(blob); // create a URL for the Blob object
 
     setImage(imageUrl);
-    setCat(true);
+    const array = []; // create a URL for the Blob object
+
     setData(json);
-    json[0].choices.map(async (item)=>{
-      const response = await fetch (`http://localhost:3000/choice/selectsvg/${item}`,{method: "GET"});
-      const json = await response.json();
-      const imageData = json[0].svg.data;
-      console.log(json[0].svg.data) // your binary data
+    const svgArray = await Promise.all(json[0].choices.map(async (item) => {
+      const response = await fetch(
+        `http://localhost:3000/choice/selectsvg/${item}`,
+        { method: "GET" }
+      );
+      const json = await response.json()
+      const imageData = await json[0].svg.data;
+      console.log(json[0].svg.data); // your binary data
       const blob = new Blob([new Uint8Array(imageData)], { type: "image/*" }); // create a Blob object from binary data
-      const imageUrl = URL.createObjectURL(blob); // create a URL for the Blob object
-    setSvgs(imageUrl)
-    })
-   
+      const imageUrl = URL.createObjectURL(blob);
+      array.push({name : item, category : imageUrl})
+     
+      return array
+    }));
+    console.log(svgArray)
+    setSvgs(svgArray)
+    console.log(svgs)
+    setCat(true)
+   } catch (error) {
+      console.error(error)
+    }
+    
+  
   };
 
   useEffect(() => {
     getingCatDetail(item);
-  }, [item]);
 
-  const createsvg = async (item)=>{
-    const response = await fetch (`http://localhost:3000/choice/selectsvg/${item}`);
-    const json = await response.json();
-    const blob = new Blob([json.svg], { type: 'image/*' });
-    const url = URL.createObjectURL(blob);
-    console.log()
-    return url
-  }
+  }, [item]);
+  
+  useEffect(() => {
+    console.log(svgs[0]);
+    
+  }, [svgs]); 
+
   return (
     <>
       {!cat ? (
         <div className="h-screen flex justify-center items-center">
-          <Loading/>
+          <Loading />
         </div>
       ) : (
         <div>
-          <div className="z-10 mb-2"> 
+          <div className="z-10 mb-2">
             <div className=" z-10 relative">
               <svg height="100" width="100" fill="none" className=" absolute">
                 <circle cx="30" cy="30" r="20" fill="white" />
@@ -80,22 +95,35 @@ const Itemsshow = () => {
               </div>
             </div>
             <div className="px-[8px] py-[8px] flex flex-col bg-white ">
-              <span className="font-bold opacity-90 text-2xl my-2">{data[0].name}</span>
+              <span className="font-bold opacity-90 text-2xl my-2">
+                {data[0].name}
+              </span>
               <div className=" grid gap-x-2 grid-cols-4">
-              {data[0].choices.map((item)=>{
-                return (<img key={item} src={createsvg(item)} alt="svg"/>)
-              })}
-              </div>
-              
-              <button className="border-2 border-[#6B84DD] rounded-full hover:bg-[#6B84DD] hover:text-white  font-semibold text-2xl px-[8px] py-[12px] my-2">Book Now</button>
-              <span className="font-bold opacity-90 text-2xl my-2">Includes</span>
-              <div className="flex flex-col space-y-2">
-                {data[0].Includes.map((item)=>{
-                  return (<div key={item} className=" font-merrisans">{item}</div>)
+                {data[0].choices.map((item)=>{
+                  return <div key={item}>{item}</div>
                 })}
-                </div>
-               <img src={svgs}/>
+                {svgs ? svgs[0].map((item,index) => {
+           
+                  return <img key={index} src={item} alt="svg" />;
+                }): <div></div>}
               </div>
+
+              <button className="border-2 border-[#6B84DD] rounded-full hover:bg-[#6B84DD] hover:text-white  font-semibold text-2xl px-[8px] py-[12px] my-2">
+                Book Now
+              </button>
+              <span className="font-bold opacity-90 text-2xl my-2">
+                Includes
+              </span>
+              <div className="flex flex-col space-y-2">
+                {data[0].Includes.map((item) => {
+                  return (
+                    <div key={item} className=" font-merrisans">
+                      {item}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       )}
