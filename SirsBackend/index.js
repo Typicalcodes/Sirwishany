@@ -14,6 +14,7 @@ app.use('/api',require('./Routes/cities'))
 app.use('/user',require('./Routes/UserLogin'))
 //categoray api
 app.use('/cat',require('./Routes/CategoryMan'))
+app.use('/choice',require('./Routes/Svgstore'))
 
 
 app.listen(port, () => {

@@ -2,7 +2,12 @@ import React from "react";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import { useSelector } from "react-redux";
 const Footer = () => {
+  const logn = useSelector((state) => state.changeCategory);
+  const show = ()=>{
+    console.log(logn)
+  }
   return (
     <div className="bg-white px-[8px] flex-col  py-[8px] mt-2 mb-2 ">
       <span className="text-lg font-bold font-merrisans mt-4">Sirwishany</span>
@@ -64,6 +69,7 @@ const Footer = () => {
         </ul>
       </div>
       <span className="text-sm">@Copyright 2023 Sirwishany. All right Reserved</span>
+   
     </div>
   );
 };

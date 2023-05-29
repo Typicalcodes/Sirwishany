@@ -1,13 +1,13 @@
 const initialstate={
-    Category: "Nothing Selected",
-    Includes: ["Go back","Select Category"]
+    Category: {}
 }
-const reducer = (state=initialstate,action)=>{
+const changeCategory = (state=initialstate,action)=>{
     if (action.type==='changeCategory'){
-        return {...state,Category:action.payload.name,Includes: action.payload.Includes }
+        console.log(action.payload)
+        return {...state,Category:action.payload}
     }
     else {
         return state
     }
 }
-export default reducer;
+export default changeCategory;

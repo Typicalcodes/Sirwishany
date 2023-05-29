@@ -11,8 +11,9 @@ import Footer from "./Components/Footer";
 import Categoryadd from "./Components/Homepage/Categoryadd";
 
 function App() {
+  
   const logn = useSelector((state) => state.loginopen);
-  console.log(logn);
+  
   return (
     <div className=" bg-gray-100">
       <Routes>

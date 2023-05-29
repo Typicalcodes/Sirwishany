@@ -11,7 +11,7 @@ import Loading from "./Loading";
 const Itemsshow = () => {
   let [searchParams]= useSearchParams();
   var item = searchParams.get('category')
-  console.log(item)
+  const [svgs,setSvgs]=useState([]);
   const [cat, setCat] = useState(false);
   const [img, setImage] = useState(null);
   var [data,setData] = useState(null);
@@ -33,13 +33,30 @@ const Itemsshow = () => {
     setImage(imageUrl);
     setCat(true);
     setData(json);
+    json[0].choices.map(async (item)=>{
+      const response = await fetch (`http://localhost:3000/choice/selectsvg/${item}`,{method: "GET"});
+      const json = await response.json();
+      const imageData = json[0].svg.data;
+      console.log(json[0].svg.data) // your binary data
+      const blob = new Blob([new Uint8Array(imageData)], { type: "image/*" }); // create a Blob object from binary data
+      const imageUrl = URL.createObjectURL(blob); // create a URL for the Blob object
+    setSvgs(imageUrl)
+    })
+   
   };
 
   useEffect(() => {
     getingCatDetail(item);
   }, [item]);
 
-  
+  const createsvg = async (item)=>{
+    const response = await fetch (`http://localhost:3000/choice/selectsvg/${item}`);
+    const json = await response.json();
+    const blob = new Blob([json.svg], { type: 'image/*' });
+    const url = URL.createObjectURL(blob);
+    console.log()
+    return url
+  }
   return (
     <>
       {!cat ? (
@@ -48,7 +65,7 @@ const Itemsshow = () => {
         </div>
       ) : (
         <div>
-          <div className="z-10 mb-2">
+          <div className="z-10 mb-2"> 
             <div className=" z-10 relative">
               <svg height="100" width="100" fill="none" className=" absolute">
                 <circle cx="30" cy="30" r="20" fill="white" />
@@ -65,8 +82,8 @@ const Itemsshow = () => {
             <div className="px-[8px] py-[8px] flex flex-col bg-white ">
               <span className="font-bold opacity-90 text-2xl my-2">{data[0].name}</span>
               <div className=" grid gap-x-2 grid-cols-4">
-              {json[0].choices.map(async (item)=>{
-                const response = fetch (`http://localhost:3000/cat/getCategory/${item}`)
+              {data[0].choices.map((item)=>{
+                return (<img key={item} src={createsvg(item)} alt="svg"/>)
               })}
               </div>
               
@@ -77,6 +94,7 @@ const Itemsshow = () => {
                   return (<div key={item} className=" font-merrisans">{item}</div>)
                 })}
                 </div>
+               <img src={svgs}/>
               </div>
           </div>
         </div>

@@ -3,7 +3,6 @@ const initialstate={
 }
 const changeService = (state=initialstate,action)=>{
     if (action.type==='changeservice'){
-       
         return {...state,services:action.payload}
     }
     else {

@@ -24,7 +24,7 @@ const changeService=(services)=>{
 const changeCategory=(category)=>{
     return (dispatch)=>{
         dispatch({
-            type: 'changecategory',
+            type: 'changeCategory',
             payload: category
         })
     }
