@@ -11,66 +11,66 @@ import Loading from "./Loading";
 const Itemsshow = () => {
   let [searchParams] = useSearchParams();
   var item = searchParams.get("category");
-  const [svgs, setSvgs] = useState(null);
+  const [svgs, setSvgs] = useState([{ name: "fdf", category: "fsdf" }]);
   const [cat, setCat] = useState(false);
   const [img, setImage] = useState(null);
   var [data, setData] = useState(null);
   const navigate = useNavigate();
   const getingCatDetail = async (item) => {
     try {
-      
-   
-    const response = await fetch(
-      `http://localhost:3000/cat/getCategory/${item}`,
-      {
-        method: "GET",
-      }
-    );
-    const json = await response.json();
-    console.log(json);
-    console.log(json[0].choices);
-    const imageData = json[0].image.data; // your binary data
-    const blob = new Blob([new Uint8Array(imageData)], { type: "image/*" }); // create a Blob object from binary data
-    const imageUrl = URL.createObjectURL(blob); // create a URL for the Blob object
-
-    setImage(imageUrl);
-    const array = []; // create a URL for the Blob object
-
-    setData(json);
-    const svgArray = await Promise.all(json[0].choices.map(async (item) => {
       const response = await fetch(
-        `http://localhost:3000/choice/selectsvg/${item}`,
-        { method: "GET" }
+        `http://localhost:3000/cat/getCategory/${item}`,
+        {
+          method: "GET",
+        }
       );
-      const json = await response.json()
-      const imageData = await json[0].svg.data;
-      console.log(json[0].svg.data); // your binary data
+      const json = await response.json();
+      console.log(json);
+      console.log(json[0].choices);
+      const imageData = json[0].image.data; // your binary data
       const blob = new Blob([new Uint8Array(imageData)], { type: "image/*" }); // create a Blob object from binary data
-      const imageUrl = URL.createObjectURL(blob);
-      array.push({name : item, category : imageUrl})
-     
-      return array
-    }));
-    console.log(svgArray)
-    setSvgs(svgArray)
-    console.log(svgs)
-    setCat(true)
-   } catch (error) {
-      console.error(error)
+      const imageUrl = URL.createObjectURL(blob); // create a URL for the Blob object
+
+      setImage(imageUrl);
+      const array = []; // create a URL for the Blob object
+
+      setData(json);
+      await Promise.all(
+        json[0].choices.map(async (item) => {
+          const response = await fetch(
+            `http://localhost:3000/choice/selectsvg/${item}`,
+            { method: "GET" }
+          );
+          const json = await response.json();
+          const imageData = await json[0].svg.data;
+          console.log(json[0].svg.data); // your binary data
+          const blob = new Blob([new Uint8Array(imageData)], {
+            type: "image/*",
+          }); // create a Blob object from binary data
+          const imageUrl = URL.createObjectURL(blob);
+          array.push({ name: item, category: imageUrl });
+          setSvgs(array);
+        })
+      );
+      console.log(array);
+
+      console.log(svgs);
+      setTimeout(() => {
+        setCat(true)
+      }, 300);
+      console.log(cat);
+    } catch (error) {
+      console.error(error);
     }
-    
-  
   };
 
   useEffect(() => {
     getingCatDetail(item);
-
   }, [item]);
-  
+
   useEffect(() => {
-    console.log(svgs[0]);
-    
-  }, [svgs]); 
+    console.log(svgs);
+  }, [svgs]);
 
   return (
     <>
@@ -99,13 +99,10 @@ const Itemsshow = () => {
                 {data[0].name}
               </span>
               <div className=" grid gap-x-2 grid-cols-4">
-                {data[0].choices.map((item)=>{
-                  return <div key={item}>{item}</div>
+                {svgs.map((item, index) => {
+                  console.log(item);
+                  return <img src={item.category} key={index} alt="svgs of icons" />;
                 })}
-                {svgs ? svgs[0].map((item,index) => {
-           
-                  return <img key={index} src={item} alt="svg" />;
-                }): <div></div>}
               </div>
 
               <button className="border-2 border-[#6B84DD] rounded-full hover:bg-[#6B84DD] hover:text-white  font-semibold text-2xl px-[8px] py-[12px] my-2">
