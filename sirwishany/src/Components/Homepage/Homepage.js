@@ -11,7 +11,7 @@ const Homepage = () => {
   return (
 
     <div className="">
-      {logn && <Login />}
+      {logn &&  <Login />}
 
       <Navbar2 />
       <Itembox /> 

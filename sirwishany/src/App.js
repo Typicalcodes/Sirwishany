@@ -9,11 +9,14 @@ import itemsshow from "./Components/Item Description/itemsshow";
 import Homepage from "./Components/Homepage/Homepage";
 import Footer from "./Components/Footer";
 import Categoryadd from "./Components/Homepage/Categoryadd";
-
+import Userpage from "./Components/User/Userpage";
+import { useEffect } from "react";
 function App() {
   
   const logn = useSelector((state) => state.loginopen);
-  
+  useEffect(()=>{
+    
+  })
   return (
     <div className=" bg-gray-100">
       <Routes>
@@ -24,6 +27,8 @@ function App() {
 
         <Route exact path="/itemshow" Component={itemsshow} />
         <Route exact path="/addCat" Component={Categoryadd} />
+        <Route exact path="/profile" Component={Userpage} />
+
       </Routes>
       <Footer  />
     </div>

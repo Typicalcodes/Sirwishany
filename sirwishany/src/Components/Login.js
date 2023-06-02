@@ -55,14 +55,29 @@ const Login = () => {
   }
   const OtpVerify = async ()=>{
     setLoading(true)
-    await window.confirmationResult.confirm(otp).then(async (res) =>{
-      console.log(res);
-      setUser(res.user);
-      setLoading(false);
-      setTimeout(() => {
-        loginclose()
-      }, 2000);
-    })
+    try {
+      await window.confirmationResult.confirm(otp).then(async (res) =>{
+        console.log(res.user.metadata);
+        setUser(res.user);
+        localStorage.setItem("login",Ph)
+        setLoading(false);
+        setTimeout(() => {
+          loginclose()
+        }, 2000);
+      })
+      
+    } catch (error) {
+      console.error(error.code)
+      if (error.code === "auth/code-expired"){
+        toast.error('Otp Expired')
+      }
+      else {
+
+        toast.error('Invalid Otp')
+      }
+      setLoading(false)
+      setOtp("")
+    }
   }
   
   return (

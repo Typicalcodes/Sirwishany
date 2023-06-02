@@ -11,6 +11,7 @@ import Loading from "./Loading";
 const Itemsshow = () => {
   let [searchParams] = useSearchParams();
   var item = searchParams.get("category");
+  const [user,setUser]=useState("user");
   const [svgs, setSvgs] = useState([{ name: "fdf", category: "fsdf" }]);
   const [cat, setCat] = useState(false);
   const [img, setImage] = useState(null);
@@ -56,7 +57,7 @@ const Itemsshow = () => {
 
       console.log(svgs);
       setTimeout(() => {
-        setCat(true)
+        setCat(true);
       }, 300);
       console.log(cat);
     } catch (error) {
@@ -70,7 +71,13 @@ const Itemsshow = () => {
 
   useEffect(() => {
     console.log(svgs);
+    const data = localStorage.getItem("login");
+    if (data){
+     setUser(data)
+    }
   }, [svgs]);
+//todofsf
+  //function for linking to profile menu
 
   return (
     <>
@@ -85,6 +92,7 @@ const Itemsshow = () => {
               <svg height="100" width="100" fill="none" className=" absolute">
                 <circle cx="30" cy="30" r="20" fill="white" />
               </svg>
+              {/* this works*/}
               <ArrowBackSharpIcon
                 onClick={() => navigate(-1)}
                 className="absolute top-[13px] left-[12px]"
@@ -99,15 +107,26 @@ const Itemsshow = () => {
                 {data[0].name}
               </span>
               <div className=" grid gap-x-2 grid-cols-4">
-                {svgs.map((item, index) => {
+                {svgs.map((item) => {
                   console.log(item);
-                  return <img src={item.category} key={index} alt="svgs of icons" />;
+                  return (
+                    <section onClick={()=>{}} className="mx-2 flex flex-wrap-reverse  flex-row items-center justify-center text-center ">
+              <figcaption className="font-semibold text-lg text-gray-700">{item.name}</figcaption>
+                      <img
+                      className="object-cover p-1 w-auto h-auto"
+                        src={item.category}
+                        key={item.name}
+                        alt="svgs of icons"
+                      />
+                       
+                    </section>
+                  );
                 })}
               </div>
 
-              <button className="border-2 border-[#6B84DD] rounded-full hover:bg-[#6B84DD] hover:text-white  font-semibold text-2xl px-[8px] py-[12px] my-2">
+              {!svgs ? <button className="border-2 border-[#6B84DD] rounded-full hover:bg-[#6B84DD] hover:text-white  font-semibold text-2xl px-[8px] py-[12px] my-2">
                 Book Now
-              </button>
+              </button> : <div></div>}
               <span className="font-bold opacity-90 text-2xl my-2">
                 Includes
               </span>

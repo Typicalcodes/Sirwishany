@@ -8,8 +8,6 @@ import { bindActionCreators } from "redux";
 import {changeCategory} from "../../redux/actionCreators/Index"; 
 
 const Itembox = () => {
-
-
   var services = useSelector((state) => state.changeServices.services);
   var city = useSelector((state) => state.place.city );
   const navigate = useNavigate();

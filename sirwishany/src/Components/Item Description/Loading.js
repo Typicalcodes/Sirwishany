@@ -2,7 +2,7 @@ import React from 'react'
 
 const loading = () => {
   return (
-    <div className="text-center">
+    <div className="text-center z-50">
     <h1 className="text-xl  mb-4 ">
       <svg
         width="120"
