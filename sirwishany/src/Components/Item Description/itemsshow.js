@@ -26,8 +26,8 @@ const Itemsshow = () => {
         }
       );
       const json = await response.json();
-      console.log(json);
-      console.log(json[0].choices);
+      // console.log(json);
+      // console.log(json[0].choices);
       const imageData = json[0].image.data; // your binary data
       const blob = new Blob([new Uint8Array(imageData)], { type: "image/*" }); // create a Blob object from binary data
       const imageUrl = URL.createObjectURL(blob); // create a URL for the Blob object
@@ -44,7 +44,7 @@ const Itemsshow = () => {
           );
           const json = await response.json();
           const imageData = await json[0].svg.data;
-          console.log(json[0].svg.data); // your binary data
+          // console.log(json[0].svg.data); // your binary data
           const blob = new Blob([new Uint8Array(imageData)], {
             type: "image/*",
           }); // create a Blob object from binary data
@@ -53,15 +53,15 @@ const Itemsshow = () => {
           setSvgs(array);
         })
       );
-      console.log(array);
+      // console.log(array);
 
-      console.log(svgs);
+      // console.log(svgs);
       setTimeout(() => {
         setCat(true);
       }, 300);
-      console.log(cat);
+      // console.log(cat);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
@@ -70,7 +70,7 @@ const Itemsshow = () => {
   }, [item]);
 
   useEffect(() => {
-    console.log(svgs);
+    // console.log(svgs);
     const data = localStorage.getItem("login");
     if (data){
      setUser(data)
@@ -108,9 +108,9 @@ const Itemsshow = () => {
               </span>
               <div className=" grid gap-x-2 grid-cols-4">
                 {svgs.map((item) => {
-                  console.log(item);
+                  // console.log(item);
                   return (
-                    <section onClick={()=>{}} className="mx-2 flex flex-wrap-reverse  flex-row items-center justify-center text-center ">
+                    <section key={item.name} onClick={()=>{}} className="mx-2 flex flex-wrap-reverse  flex-row items-center justify-center text-center ">
               <figcaption className="font-semibold text-lg text-gray-700">{item.name}</figcaption>
                       <img
                       className="object-cover p-1 w-auto h-auto"

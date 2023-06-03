@@ -23,7 +23,6 @@ const Categoryadd = () => {
       formData.append('Includes[]', Includes[i]);
     }
     for (let i =0; i < choices.length; i++){
-      
       formData.append('choices[]', choices[i]);
     }
     formData.append("image", image, "image.jpg");
@@ -81,6 +80,19 @@ const handleSvgChange = (event) => {
   const file = event.target.files[0];
   setSvg(file)
 };
+const setprofile = async () => {
+  const response = await fetch("http://localhost:3000/user/login",{
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  })
+  const json = await response.json();
+  console.log(json)
+  
+  // console.log(user);
+};
   return (
     <>
     <div className="flex flex-col text-left content-start items-start">
@@ -121,7 +133,7 @@ const handleSvgChange = (event) => {
         <input type="file" name="svg" accept="image/*" onChange={handleSvgChange} />
         <button type="submit" onClick={handleUpload}>Upload</button>
       </form>
-
+    
     <button style={{
           background: "black",
           color: "white",
@@ -132,6 +144,7 @@ const handleSvgChange = (event) => {
           borderRadius: "10px",
         }} onClick={handlesvg}>Click Me</button>
     </div>
+    <button  onClick={()=>{setprofile()}}>Second Request</button>
     </>
   );
 };

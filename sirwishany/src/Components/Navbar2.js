@@ -31,7 +31,7 @@ const Navbar2 = () => {
       method: "GET",
     });
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
     setCity(json);
   };
   const [value, setValue] = useState("Agra, Uttar Pradesh");
@@ -41,19 +41,29 @@ const Navbar2 = () => {
 
   useLayoutEffect(() => {
     getallcity();
-    console.log(getallcity());
+    // console.log(getallcity());
   }, []);
   const onSearch = () => {
     setValue("");
-    console.log("search");
+    // console.log("search");
   };
 
   // a function to set profile
   const setprofile = async () => {
-    const usere = await localStorage.getItem("login");
-    setUser(usere);
+    const response = await fetch("http://localhost:3000/user/login",{
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    })
+    const json = await response.json();
+    console.log(json)
+    if (json.loggedin === true){
+      setUser(true)
+    }
     setLoading(false);
-    console.log(user);
+    // console.log(user);
   };
   useEffect(() => {
     setprofile();
@@ -63,18 +73,18 @@ const Navbar2 = () => {
     await setshowInput(true);
     setValue(`${name}, ${state}`);
     cityselect({ name, state });
-    console.log(services);
+    // console.log(services);
     ChangeServices(services);
-    console.log(value);
+    // console.log(value);
   };
   //Function for open input whenclickng on city
   const onClickCity = async () => {
     await setshowInput(false);
     onSearch(value);
     ref.current.focus();
-    console.log(showInput);
+    // console.log(showInput);
   };
-  return (
+  return ( 
     <>
       {!loading ? (
         <div className="space-y-[8px] px-[8px] pt-[8px] bg-white ">
