@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AC, WashingMachine } from "./svgimports";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import { useSelector } from "react-redux";
@@ -10,7 +10,9 @@ import Loading from "./Loading";
 
 const Itemsshow = () => {
   let [searchParams] = useSearchParams();
-  var item = searchParams.get("category");
+  let item = searchParams.get("category");
+  let city = searchParams.get("city");
+  const [category, setcategory] = useState(item)
   const [user,setUser]=useState("user");
   const [svgs, setSvgs] = useState([{ name: "fdf", category: "fsdf" }]);
   const [cat, setCat] = useState(false);
@@ -110,7 +112,7 @@ const Itemsshow = () => {
                 {svgs.map((item) => {
                   // console.log(item);
                   return (
-                    <section key={item.name} onClick={()=>{}} className="mx-2 flex flex-wrap-reverse  flex-row items-center justify-center text-center ">
+                    <Link to={{pathname: "/booking", search: `?city=${city}&category=${category}&type=${item.name}`}} key={item.name} onClick={()=>{}} className="mx-2 flex flex-wrap-reverse  flex-row items-center justify-center text-center ">
               <figcaption className="font-semibold text-lg text-gray-700">{item.name}</figcaption>
                       <img
                       className="object-cover p-1 w-auto h-auto"
@@ -119,7 +121,7 @@ const Itemsshow = () => {
                         alt="svgs of icons"
                       />
                        
-                    </section>
+                    </Link>
                   );
                 })}
               </div>

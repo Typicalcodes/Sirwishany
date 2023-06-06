@@ -9,8 +9,10 @@ import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { openlogin } from "../redux/actionCreators/Index";
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
+  const navigate =useNavigate();
   const [otp, setOtp] = useState("");
   const [Ph, setPh] = useState("");
   const [loading, setLoading] = useState(false);
@@ -57,6 +59,8 @@ const Login = () => {
         // ...
       });
   };
+
+  //
   const OtpVerify = async () => {
     setLoading(true);
     try {
@@ -79,9 +83,11 @@ const Login = () => {
         console.log(response);
 
         setLoading(false);
+
         setTimeout(() => {
-          loginclose();
-        }, 2000);
+          navigate(-1);
+        }, 500);
+        toast.success("Logged in Successfully");
       });
     } catch (error) {
       console.error(error.code);
@@ -122,7 +128,7 @@ const Login = () => {
                 onClick={OtpVerify}
                 className="rounded-md px-[14px] py-[8px] items-center justify-center flex bg-black bg-opacity-75 text-white text-opacity-75 w-full mb-[8px"
               >
-                {loading && <CgSpinner size={20} className="animate-spin" />}{" "}
+                {loading && <CgSpinner size={20} className="animate-spin" />}
                 Verify OTP
               </button>
             </>

@@ -30,8 +30,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
+     
       expires: 216000000,
-      sameSite: 'none'
+      
     },
   })
 );
@@ -79,7 +80,7 @@ async (req, res) => {
 
 //! for check login
 app.get("/user/login", async (req,res)=>{
-  const cookieValue = req.cookies.userId;
+  const cookieValue = req.cookies.cookieName;
   console.log(cookieValue)
   if (req.session.user){
     res.send({loggedin: true, user: req.session.user})

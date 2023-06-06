@@ -86,7 +86,7 @@ const Navbar2 = () => {
   };
   return ( 
     <>
-      {!loading ? (
+
         <div className="space-y-[8px] px-[8px] pt-[8px] bg-white ">
           <div className="flex items-center justify-between ">
             <div className="flex flex-col">
@@ -104,12 +104,12 @@ const Navbar2 = () => {
                   <UserProfile />
                 </Link>
               ) : (
-                <button
-                  onClick={() => logindone()}
+                <Link
+                  to="/login"
                   className="font-merrisans bg-[#313335] text-white font-semibold rounded-full px-[24px] py-[8px]"
                 >
                   Login
-                </button>
+                </Link>
               )}
             </div>
           </div>
@@ -189,11 +189,8 @@ const Navbar2 = () => {
             </div>
           </div>
         </div>
-      ) : (
-        <div className="h-screen flex justify-center items-center">
-          <Loading />
-        </div>
-      )}
+
+  
     </>
   );
 };
