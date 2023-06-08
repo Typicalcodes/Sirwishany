@@ -38,3 +38,28 @@
  
   }
 }
+.date-field::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.color-change{
+  border-color: blue;
+}
+
+.error-change{
+  opacity: 1;
+  animation: erroran 5s forwards ease-in-out;
+}
+.error-change.back{
+  opacity: 0;
+  animation: erroran 2s reverse backwards ease-in-out;
+}
+@keyframes erroran {
+  0%   {opacity: 0;}
+  10% {opacity: 1;}
+  25%  {opacity: 1;}
+  50%  {opacity: 1;}
+  75%  {opacity: 1;}
+  100% {opacity: 0;}
+  
+}

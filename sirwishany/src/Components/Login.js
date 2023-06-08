@@ -9,10 +9,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { openlogin } from "../redux/actionCreators/Index";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 const Login = () => {
   const navigate =useNavigate();
+  const location = useLocation();
   const [otp, setOtp] = useState("");
   const [Ph, setPh] = useState("");
   const [loading, setLoading] = useState(false);
@@ -85,7 +86,11 @@ const Login = () => {
         setLoading(false);
 
         setTimeout(() => {
+          console.log("back")
           navigate(-1);
+          if(location.pathname === "/login"){
+            navigate("/booking")
+          }
         }, 500);
         toast.success("Logged in Successfully");
       });

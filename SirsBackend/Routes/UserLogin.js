@@ -2,27 +2,49 @@ const express = require("express");
 const router = express.Router();
 const user = require("../Models/User/CreateUser");
 const { body, validationResult } = require("express-validator");
-const bodyParser =  require("body-parser");
-const cookieParser  = require("cookie-parser");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
+router.post("/addAddress", async (req, res) => {
+  const {city,place,state} = req.body;
 
-router.get("/update", async (req, res) => {
-   
-   try {
+  if (req.session.user) {
+    try {
+      const fu = await user.updateOne(
+        { phoneNo: req.session.user[0].phoneNo },
+        {
+          $push: {
+            addresses: {
+              place,
+              city,
+              state,
+            },
+          },
+        },
+        { new: true }
+      );
+      res.json(fu);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  } else {
+    res.send({ loggedin: false });
+  }
+});
+router.get("/fetchAddress", async (req, res) => {
+  if (req.session.user) {
+    try {
+
+      const fu = await user.find({ phoneNo: req.session.user[0].phoneNo });
      
-     const userdata = await user.find({ phoneNo: req.body.phoneNo });
-     if (userdata){
-       req.session.user = userdata;
-       res.send(req.session.user)
-     }else{
-       res.status(400).json({message : "not working"})
-     }
-     console.log(userdata);
-   } catch (err) {
-     res.status(400).json({ message: err.message });
-   }
-   res.send(req.body);
- });
+      res.send(fu[0].addresses);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  } else {
+    res.send({ loggedin: false });
+  }
+});
 
 module.exports = router;
