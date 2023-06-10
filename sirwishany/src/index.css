@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-text-field.MuiInputBase-input::placeholder {
+  font-size: 14px; /* Customize the font size */
+}
+
+
 .react-tel-input .form-control {
     @apply !w-full py-6 !text-base ;
 }

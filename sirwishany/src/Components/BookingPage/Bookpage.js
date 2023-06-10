@@ -1,7 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Addresslogo } from "../Item Description/svgimports";
+import "@fontsource/roboto/400.css";
+import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { TextField } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import toast, { Toaster } from "react-hot-toast";
 const Bookpage = () => {
+  // theming
+  const theme = createTheme({
+    palette: {
+      primary: {
+        // Purple and green play nicely together.
+        main: "#6B84DD",
+      },
+      secondary: {
+        // This is green.A700 as hex.
+        main: "#11cb5f",
+      },
+    },
+  });
+
+  //
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
   let cattype = searchParams.get("type");
@@ -73,18 +96,18 @@ const Bookpage = () => {
   let error = false;
   const [errorshow, setErrorshow] = useState(false);
   const addAddress = async () => {
-    error = false
- //!await is necessary when setting states sometimes
-    await setErrorshow(error)
-   
+    error = false;
+    //!await is necessary when setting states sometimes
+    await setErrorshow(error);
+
     if (Place.length < 5) {
-      error = true
-    }else{
-      error = false
+      error = true;
+    } else {
+      error = false;
     }
-    
-    setErrorshow(error)
- 
+
+    setErrorshow(error);
+
     if (error === false) {
       const savedata = {
         city: cityse,
@@ -106,7 +129,7 @@ const Bookpage = () => {
       if (json.acknowledged === true) {
         setprofile();
       }
-      
+
       console.log(json);
     }
   };
@@ -115,11 +138,15 @@ const Bookpage = () => {
   const selectaddress = (add) => {
     setSelectedAddress(add);
   };
+  let addrescolor = false;
   const changeaddstyle = (add) => {
     if (selectedAddress === add) {
-      return { borderColor: "blue", color: "white" };
+      addrescolor = true;
+      return "border-2 border-[#6B84DD] text-[#6B84DD]";
+    } else {
+      addrescolor = false;
+      return {};
     }
-    return {};
   };
   //changing styling on select of slot
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -128,7 +155,7 @@ const Bookpage = () => {
   };
   const changeslotstyle = (slot) => {
     if (selectedSlot === slot) {
-      return { borderColor: "blue" };
+      return "border-2 border-[#6B84DD] text-[#6B84DD] font-semibold";
     }
     return {};
   };
@@ -137,143 +164,194 @@ const Bookpage = () => {
   const selectingDate = (event) => {
     setSelectedDate(event.target.value);
   };
-  
+ //todo final api for booking database
+ const booknow = async ()=>{
+    if(selectedDate && selectedSlot && selectedAddress){
+      console.log(selectedDate,selectedSlot,selectedAddress)
+      const data = {
+        date : selectedDate,
+        time : selectedSlot,
+        worktype: cattype,
+        address: {
+          place: selectedAddress.place,
+          state : selectedAddress.state,
+          city : selectedAddress.city
+        }
+      }
+      console.log(data)
+      const response = await fetch("http://localhost:3000/user/bookingnow",{
+        method: "POST",
+        headers: {
+          'Content-Type':"application/json"
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      })
+      const json = await response.json();
+      console.log(json)
+    }else{
+      toast.error("Fill Complete Information")
+    }
+  }
+
   return (
-    <>
-      <section className="bg-white mx-auto px-2">
-        <div className="flex items-center justify-center mt-2">
-        <header className="text-center text-2xl mx-auto my-2 font-semibold  text-[#020614]">
-        {cattype}
-        </header>
-        <div className="flex">
-        <button className="rounded-2xl  px-[12px] py-[8px] font-semibold bg-[#6B84DD]  text-white">Book</button>
+    <><Toaster toastOptions={{ duration: 2000 }} />
+      <ThemeProvider theme={theme}>
+        <section className="bg-white mx-auto px-2">
+          <div className="flex items-center justify-center mt-2">
+            <header className="text-center text-2xl mx-auto my-2 font-semibold  text-[#020614]">
+              {cattype}
+            </header>
+            <div className="flex">
+        <button onClick={()=>{booknow()}} className="rounded-2xl  px-[12px] py-[8px] font-semibold bg-[#6B84DD] drop-shadow-lg text-white">Book</button>
         </div>
         </div>
        
         <div className="my-3 flex flex-col ">
-          <label className="mb-2 text-[#6B84DD] font-semibold">Select Date</label>
-          <input
-            type="date"
-            id="myDate"
-            name="myDate"
-            onChange={selectingDate}
-            className=" bg-white border w-full border-gray-300 rounded-md py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2"
-          />
-          <label className="mb-3 text-[#6B84DD] font-semibold">Select Time Slot</label>
-          <div className="grid grid-cols-4 gap-2 mb-2 ">
-            {Slots.map((item) => {
-              return (
-                <div
-                  key={item}
-                  onClick={() => {
-                    setSelectedSlot(item);
-                  }}
-                  className="border text-center rounded-md p-1 "
-                  style={changeslotstyle(item)}
-                >
-                  {item}
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex justify-between items-center mb-2">
-            <label className=" text-[#6B84DD] font-semibold">Select Address</label>
-            <button
-              onClick={() => {
-                openaddress();
-              }}
-              className="rounded-2xl px-[12px] py-[8px] font-semibold bg-white border"
-            >
-             {adOpen ? "-":"+"} Add
-            </button>
-          </div>
-          {adOpen && (
-            <div className="space-y-2 border p-4  mb-2 fade-transition">
-              <input
-                className="w-full px-2 py-1 border-b-2 inputbox"
-                placeholder="Type Your Address"
-                type="text"
-                onChange={(event) => {
-                  setPlace(event.target.value);
-                }}
-              />
-              <section>
-                <section className="flex justify-evenly space-x-2">
-                  <select
-                    className="border-2 w-full rounded-md p-2"
-                    name="states"
-                    id=""
-                    onChange={(event) => {
-                      if (event.target.value) {
-                        setCity(event.target.value);
-                      } else {
-                        setCityse(null);
-                        setseCity([]);
-                      }
-                    }}
-                  >
-                    <option value=""></option>
-                    {keys.map((item) => {
-                      return <option key={item}>{item}</option>;
-                    })}
-                  </select>
-                  <select
-                    className="border-2 w-full rounded-md p-2"
-                    name="states"
-                    id=""
-                    onChange={(event) => {
-                      setCityse(event.target.value);
-                    }}
-                  >
-                    <option></option>
-                    {seCity.map((item) => {
-                      //console.log(item);
-                      return (
-                        <option key={item} value={item}>
-                          {item}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </section>
-              </section>
-              <div className="flex justify-end ">
-                <button
-                  className="rounded-2xl  px-[12px] py-[8px] font-semibold bg-white border"
-                  onClick={() => {
-                    addAddress();
-                  }}
-                  disabled={seState && cityse ? false : true}
-                >
-                  Save
-                </button>
-              </div>
-              {errorshow && <span className={`text-red-700 font-semibold ${errorshow ? 'error-change ' : 'error-change back'}`}>Write a long address</span>}
-            </div>
-          )}
-          <section>
-            {User &&
-              User.map((item, index) => {
+            <label className="mb-2  font-semibold">
+              Select Date
+            </label>
+            <input
+              type="date"
+              id="myDate"
+              name="myDate"
+              onChange={selectingDate}
+              className={`${selectedDate ? "border-2 border-[#6B84DD] font-semibold":"border-2"} bg-white border-1 w-full rounded-md py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-4`}
+            />
+            <label className="mb-3  font-semibold">
+              Select Time Slot
+            </label>
+            <div className="grid grid-cols-4 gap-2 mb-2 ">
+              {Slots.map((item) => {
                 return (
                   <div
-                    key={index}
+                    key={item}
                     onClick={() => {
-                      selectaddress(item);
+                      setSelectedSlot(item);
                     }}
-                    style={changeaddstyle(item)}
-                    className="w-full border border-1 rounded-md flex justify-between p-2 items-center mb-2"
+                    className={`${changeslotstyle(
+                      item
+                    )} border text-center rounded-md p-1 `}
                   >
-                    <Addresslogo />
-
-                    <span className="border-l-2 w-full mx-2 px-2 truncate text-gray-900 text-left">
-                      {item.place}, {item.city}, {item.state}
-                    </span>
+                    {item}
                   </div>
                 );
               })}
-          </section>
-        </div>
-      </section>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <label className="  font-semibold">
+                Select Address
+              </label>
+
+              <Fab
+                onClick={() => {
+                  openaddress();
+                }}
+                size="small"
+                color="primary"
+                aria-label="add"
+              >
+                {adOpen ? <RemoveIcon /> : <AddIcon />}
+              </Fab>
+
+            
+            </div>
+            {adOpen && (
+              <div className="space-y-2 border-2 p-4 rounded-md  mb-2 fade-transition ">
+                <TextField onChange={(event) => {
+                    setPlace(event.target.value);
+                  }} id="standard-basic" className="w-full text-sm custom -text-field" label="Type Your Address" variant="standard" />
+                
+                <section>
+                  <section className="flex justify-evenly space-x-2">
+                    <select
+                      className="border-2 w-full rounded-md p-2"
+                      name="states"
+                      id=""
+                      onChange={(event) => {
+                        if (event.target.value) {
+                          setCity(event.target.value);
+                        } else {
+                          setCityse(null);
+                          setseCity([]);
+                        }
+                      }}
+                    >
+                      <option value=""></option>
+                      {keys.map((item) => {
+                        return <option key={item}>{item}</option>;
+                      })}
+                    </select>
+                    <select
+                      className="border-2 w-full rounded-md p-2"
+                      name="states"
+                      id=""
+                      onChange={(event) => {
+                        setCityse(event.target.value);
+                      }}
+                    >
+                      <option></option>
+                      {seCity.map((item) => {
+                        //console.log(item);
+                        return (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </section>
+                </section>
+                <div className="flex justify-between items-center ">
+                {errorshow && (
+                  <span
+                    className={`text-red-700 font-semibold ${
+                      errorshow ? "error-change " : "error-change back"
+                    }`}
+                  >
+                    Write a long address
+                  </span>
+                )}
+                  <button
+                    className="rounded-2xl  px-[12px] py-[8px] font-semibold bg-white border"
+                    onClick={() => {
+                      addAddress();
+                    }}
+                    disabled={seState && cityse ? false : true}
+                  >
+                    Save
+                  </button>
+                </div>
+               
+              </div>
+            )}
+            <section>
+              {User &&
+                User.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        selectaddress(item);
+                      }}
+                      className={`w-full ${changeaddstyle(
+                        item
+                      )} border border-1 rounded-md flex justify-between p-2 items-center mb-2`}
+                    >
+                      <Addresslogo color={addrescolor ? "#6B84DD" : "gray"} />
+
+                      <span
+                        className={`border-l-2 border-b-0 border-t-0 ${addrescolor ? "text-[#6B84DD] font-semibold" : ""}border-r-0  w-full mx-2 px-2 truncate text-gray-900 text-left`}
+                      >
+                        {item.place}, {item.city}, {item.state}
+                      </span>
+                    </div>
+                  );
+                })}
+            </section>
+          </div>
+        </section>
+      </ThemeProvider>
     </>
   );
 };

@@ -9,7 +9,7 @@ import itemsshow from "./Components/Item Description/itemsshow";
 import Homepage from "./Components/Homepage/Homepage";
 import Footer from "./Components/Footer";
 import Categoryadd from "./Components/Homepage/Categoryadd";
-import Userpage from "./Components/User/Userpage";
+import Profile from "./Components/User/Profile";
 import { useEffect } from "react";
 import Bookpage from "./Components/BookingPage/Bookpage";
 function App() {
@@ -28,7 +28,7 @@ function App() {
 
         <Route exact path="/itemshow" Component={itemsshow} />
         <Route exact path="/addCat" Component={Categoryadd} />
-        <Route exact path="/profile" Component={Userpage} />
+        <Route exact path="/profile" Component={Profile} />
         <Route exact path="/booking" Component={Bookpage} />
         <Route exact path="/login" Component={Login}/>
       

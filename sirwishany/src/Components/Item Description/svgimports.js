@@ -58,12 +58,12 @@ const AC = () => {
     </div>
   );
 };
-const UserProfile = () => {
+const UserProfile = (props) => {
   return (
-    <div className="">
+    <div className="drop-shadow-lg">
       <svg
-        width="60px"
-        height="60px"
+        width={props.width}
+        height={props.height}
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -99,14 +99,14 @@ const UserProfile = () => {
     </div>
   );
 };
-const Addresslogo = () => {
+const Addresslogo = (props) => {
   return (
   
         <svg
           width="30px"
           height="30px"
           viewBox="0 0 1024 1024"
-          fill="#454444"
+          fill={props.color}
           className=""
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"

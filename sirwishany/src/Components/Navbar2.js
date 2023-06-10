@@ -101,7 +101,7 @@ const Navbar2 = () => {
             <div>
               {user ? (
                 <Link to="/profile">
-                  <UserProfile />
+                  <UserProfile width={"60px"} height={"60px"}/>
                 </Link>
               ) : (
                 <Link

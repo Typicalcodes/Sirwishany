@@ -31,7 +31,6 @@ router.get("/getallcity", async (req, res) => {
   console.log(req.body);
   try {
     const city = await Cities.find({});
-
     res.json(city);
   } catch (err) {
     res.status(400).json({ message: err.message });

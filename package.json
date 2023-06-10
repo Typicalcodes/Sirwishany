@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@fontsource/roboto": "^5.0.2",
     "react-google-maps": "^9.4.5",
     "react-svg": "^16.1.11"
   }
