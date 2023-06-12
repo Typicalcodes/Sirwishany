@@ -9,10 +9,10 @@ import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { openlogin } from "../redux/actionCreators/Index";
-import {useNavigate, useLocation} from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import { ProfLogo } from "./Item Description/svgimports";
 const Login = () => {
-  const navigate =useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
   const [otp, setOtp] = useState("");
   const [Ph, setPh] = useState("");
@@ -22,6 +22,9 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const loginclose = bindActionCreators(openlogin, dispatch);
+
+  //*state for checking if prof login
+  const [proflogin, setProflogin] = useState(false);
   const captechaverify = () => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
@@ -73,26 +76,47 @@ const Login = () => {
           phoneNo: Ph,
         };
         // Creating a fetching request for login
-        const response = await fetch("http://localhost:3000/user/login", {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data),
-          credentials: 'include'
-        });
-        console.log(response);
+        if (proflogin === false) {
+          const response = await fetch("http://localhost:3000/user/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+            credentials: "include",
+          });
+          console.log(response);
+          setTimeout(() => {
+            console.log("back");
+            navigate(-1);
+            if (location.pathname === "/login") {
+              navigate("/booking");
+            }
+          }, 500);
+          toast.success("Logged in Successfully");
+        } else {
+          const response = await fetch("http://localhost:3000/prof/createuser",{
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+            credentials: "include",
+          })
+          const json= await response.json();
+          console.log(json)
+          setTimeout(() => {
+       
+            if (json.newuser) {
+              navigate("/firstlogin");
+            }
+          }, 500);
+          toast.success("Logged in Successfully");
+        }
 
         setLoading(false);
 
-        setTimeout(() => {
-          console.log("back")
-          navigate(-1);
-          if(location.pathname === "/login"){
-            navigate("/booking")
-          }
-        }, 500);
-        toast.success("Logged in Successfully");
+        
       });
     } catch (error) {
       console.error(error.code);
@@ -107,13 +131,38 @@ const Login = () => {
   };
 
   return (
-    <div className="absolute top-0 right-0 w-full  bg-gray-200 h-screen z-50 mx-auto border">
+    <div className="absolute top-0 right-0 w-full  bg-gray-200 h-screen p-2 z-50 mx-auto border">
       <Toaster toastOptions={{ duration: 4000 }} />
-      <div id="recaptcha-container"></div>
+      <div
+        onClick={() => {
+          setProflogin(!proflogin);
+        }}
+        className="flex    mb-3 relative"
+      >
+        <span className="absolute roboto-font text-[#6B84DD] cursor-pointer right-0 underline-offset-1 underline  text-right">
+          Login as {!proflogin ? "Proffessional" : "User"}
+        </span>
+      </div>
+      {proflogin && (
+        <figure className="flex  items-center object-cover justify-center opacity-animation ">
+          {" "}
+          <ProfLogo width="15rem" height="15rem" />
+        </figure>
+      )}
+      {proflogin && (
+        <header className="center font-merri font-bold opacity-75 mb-[8px] text-center text-2xl opacity-animation ">
+          Proffessional Login
+        </header>
+      )}
+      <div id="recaptcha-container" className=""></div>
       {user ? (
         <h2 className="mx-auto text-center mt-[64px]">Login Success </h2>
       ) : (
-        <div className=" mt-[24px] relative px-[72px] flex flex-col items-center   text-center">
+        <div
+          className={` relative ${
+            !proflogin && "mt-[54px]"
+          } px-[72px] flex flex-col items-center   text-center`}
+        >
           {showOtp ? (
             <>
               <span className="center font-merri font-bold opacity-75 mb-[8px]">

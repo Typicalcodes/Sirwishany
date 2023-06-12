@@ -257,7 +257,7 @@ const Bookpage = () => {
             
             </div>
             {adOpen && (
-              <div className="space-y-2 border-2 p-4 rounded-md  mb-2 fade-transition ">
+              <div className="space-y-2 border-2  border-[#788FE1]  p-4 rounded-md  mb-2 fade-transition ">
                 <TextField onChange={(event) => {
                     setPlace(event.target.value);
                   }} id="standard-basic" className="w-full text-sm custom -text-field" label="Type Your Address" variant="standard" />

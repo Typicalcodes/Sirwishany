@@ -68,3 +68,27 @@
   100% {opacity: 0;}
   
 }
+
+/* robot font */
+.robot-font{
+  font-family: 'Roboto', sans-serif;
+}
+
+
+/* opacity animation*/
+
+.opacity-animation{
+  opacity: 0;
+  animation: opanimate 1s forwards;
+  
+}
+
+@keyframes opanimate {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+  
+}
