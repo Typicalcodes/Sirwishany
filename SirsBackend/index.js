@@ -46,11 +46,12 @@ app.use("/user", require("./Routes/UserLogin"));
 app.use("/cat", require("./Routes/CategoryMan"));
 app.use("/choice", require("./Routes/Svgstore"));
 
+//worker
+app.use("/prof", require("./Routes/Workerroutes"))
 
 //! special apis for login user
 app.post("/user/login",
 async (req, res) => {
-
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
   //   return res.status(400).json({ errors: errors.array() });
@@ -71,16 +72,12 @@ async (req, res) => {
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
-  
   }
- 
- 
  }
 )
 
 //! for check login
-app.get("/user/login", async (req,res)=>{
- 
+app.get("/user/login", async (req,res)=>{ 
   if (req.session.user){
     const userdata = await user.find({ phoneNo: req.session.user[0].phoneNo });
     res.send({loggedin: true, user: userdata})
