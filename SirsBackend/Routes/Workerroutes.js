@@ -20,15 +20,24 @@ async (req, res) => {
         phoneNo: req.body.phoneNo
       })
       const saves = await data.save();
-      req.session.user = saves;
+      req.session.user = {type: "Prof",data: saves};
       res.json({newuser: true, user: saves})
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
-  
   }
  
  
  }
 )
+router.use("/login", async (req,res)=>{ 
+  if (req.session.user && req.session.user.type === "Prof"){
+    console.log(req.session.user)
+    const userdata = await user.find({ phoneNo: req.session.user.data[0].phoneNo });
+    res.send({loggedin: true, user: userdata})
+    console.log(userdata)
+  }else{
+    res.send({loggedin: false})
+  }
+})
 module.exports =router
