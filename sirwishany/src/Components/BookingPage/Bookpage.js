@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, redirect } from "react-router-dom";
 import { Addresslogo } from "../Item Description/svgimports";
 import "@fontsource/roboto/400.css";
 import Button from "@mui/material/Button";
@@ -9,6 +9,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { TextField } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import toast, { Toaster } from "react-hot-toast";
+import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 const Bookpage = () => {
   // theming
   const theme = createTheme({
@@ -58,10 +59,10 @@ const Bookpage = () => {
 
     console.log(json);
 
-    if (json) {
-      setUser(json);
-    } else {
-      navigate("/login");
+    if (json.loggedin === true) {
+      await setUser(json.data);
+    } else if (json.loggedin === false) {
+      navigate({ pathname: "/login", search: `?page=b` });
     }
     // console.log(user);
   };
@@ -164,63 +165,81 @@ const Bookpage = () => {
   const selectingDate = (event) => {
     setSelectedDate(event.target.value);
   };
- //todo final api for booking database
- const booknow = async ()=>{
-    if(selectedDate && selectedSlot && selectedAddress){
-      console.log(selectedDate,selectedSlot,selectedAddress)
+  //todo final api for booking database
+  const booknow = async () => {
+    if (selectedDate && selectedSlot && selectedAddress) {
+      console.log(selectedDate, selectedSlot, selectedAddress);
       const data = {
-        date : selectedDate,
-        time : selectedSlot,
+        date: selectedDate,
+        time: selectedSlot,
         worktype: cattype,
         address: {
           place: selectedAddress.place,
-          state : selectedAddress.state,
-          city : selectedAddress.city
-        }
-      }
-      console.log(data)
-      const response = await fetch("http://localhost:3000/user/bookingnow",{
+          state: selectedAddress.state,
+          city: selectedAddress.city,
+        },
+      };
+      console.log(data);
+      const response = await fetch("http://localhost:3000/user/bookingnow", {
         method: "POST",
         headers: {
-          'Content-Type':"application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
         credentials: "include",
-      })
+      });
       const json = await response.json();
-      console.log(json)
-    }else{
-      toast.error("Fill Complete Information")
+      console.log(json);
+    } else {
+      toast.error("Fill Complete Information");
     }
-  }
+  };
 
   return (
-    <><Toaster toastOptions={{ duration: 2000 }} />
+    <>
+      <Toaster toastOptions={{ duration: 2000 }} />
+
       <ThemeProvider theme={theme}>
         <section className="bg-white mx-auto px-2">
+          
           <div className="flex items-center justify-center mt-2">
+          <div className=" rounded-full">
+            
+            <ArrowBackSharpIcon
+              onClick={() => navigate(-1)}
+              className=" "
+              sx = {{fontSize: 28}}
+            />
+          </div>
             <header className="text-center text-2xl mx-auto my-2 font-semibold  text-[#020614]">
               {cattype}
             </header>
             <div className="flex">
-        <button onClick={()=>{booknow()}} className="rounded-2xl  px-[12px] py-[8px] font-semibold bg-[#6B84DD] drop-shadow-lg text-white">Book</button>
-        </div>
-        </div>
-       
-        <div className="my-3 flex flex-col ">
-            <label className="mb-2  font-semibold">
-              Select Date
-            </label>
+              <button
+                onClick={() => {
+                  booknow();
+                }}
+                className="rounded-2xl  px-[12px] py-[8px] font-semibold bg-[#6B84DD] drop-shadow-lg text-white"
+              >
+                Book
+              </button>
+            </div>
+          </div>
+
+          <div className="my-3 flex flex-col ">
+            <label className="mb-2  font-semibold">Select Date</label>
             <input
               type="date"
               id="myDate"
               name="myDate"
               onChange={selectingDate}
-              className={`${selectedDate ? "border-2 border-[#6B84DD] font-semibold":"border-2"} bg-white border-1 w-full rounded-md py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-4`}
+              className={`${
+                selectedDate
+                  ? "border-2 border-[#6B84DD] font-semibold"
+                  : "border-2"
+              } bg-white border-1 w-full rounded-md py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-4`}
             />
-            <label className="mb-3  font-semibold">
-              Select Time Slot
-            </label>
+            <label className="mb-3  font-semibold">Select Time Slot</label>
             <div className="grid grid-cols-4 gap-2 mb-2 ">
               {Slots.map((item) => {
                 return (
@@ -239,9 +258,7 @@ const Bookpage = () => {
               })}
             </div>
             <div className="flex justify-between items-center mb-2">
-              <label className="  font-semibold">
-                Select Address
-              </label>
+              <label className="  font-semibold">Select Address</label>
 
               <Fab
                 onClick={() => {
@@ -253,15 +270,19 @@ const Bookpage = () => {
               >
                 {adOpen ? <RemoveIcon /> : <AddIcon />}
               </Fab>
-
-            
             </div>
             {adOpen && (
               <div className="space-y-2 border-2  border-[#788FE1]  p-4 rounded-md  mb-2 fade-transition ">
-                <TextField onChange={(event) => {
+                <TextField
+                  onChange={(event) => {
                     setPlace(event.target.value);
-                  }} id="standard-basic" className="w-full text-sm custom -text-field" label="Type Your Address" variant="standard" />
-                
+                  }}
+                  id="standard-basic"
+                  className="w-full text-sm custom -text-field"
+                  label="Type Your Address"
+                  variant="standard"
+                />
+
                 <section>
                   <section className="flex justify-evenly space-x-2">
                     <select
@@ -303,15 +324,15 @@ const Bookpage = () => {
                   </section>
                 </section>
                 <div className="flex justify-between items-center ">
-                {errorshow && (
-                  <span
-                    className={`text-red-700 font-semibold ${
-                      errorshow ? "error-change " : "error-change back"
-                    }`}
-                  >
-                    Write a long address
-                  </span>
-                )}
+                  {errorshow && (
+                    <span
+                      className={`text-red-700 font-semibold ${
+                        errorshow ? "error-change " : "error-change back"
+                      }`}
+                    >
+                      Write a long address
+                    </span>
+                  )}
                   <button
                     className="rounded-2xl  px-[12px] py-[8px] font-semibold bg-white border"
                     onClick={() => {
@@ -322,7 +343,6 @@ const Bookpage = () => {
                     Save
                   </button>
                 </div>
-               
               </div>
             )}
             <section>
@@ -341,7 +361,9 @@ const Bookpage = () => {
                       <Addresslogo color={addrescolor ? "#6B84DD" : "gray"} />
 
                       <span
-                        className={`border-l-2 border-b-0 border-t-0 ${addrescolor ? "text-[#6B84DD] font-semibold" : ""}border-r-0  w-full mx-2 px-2 truncate text-gray-900 text-left`}
+                        className={`border-l-2 border-b-0 border-t-0 ${
+                          addrescolor ? "text-[#6B84DD] font-semibold" : ""
+                        }border-r-0  w-full mx-2 px-2 truncate text-gray-900 text-left`}
                       >
                         {item.place}, {item.city}, {item.state}
                       </span>

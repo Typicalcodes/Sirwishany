@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Loading from "../Item Description/Loading";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { UserProfile } from "../Item Description/svgimports";
+import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 const Profile = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
   const setprofile = async () => {
@@ -15,11 +18,14 @@ const Profile = () => {
     const json = await response.json();
     console.log(json);
     if (json.loggedin === true) {
-      setUser(json);
+      await setUser(json);
       console.log(user);
+      setLoading(false);
+    }else{
+      setLoading(true)
     }
     console.log(user);
-    setLoading(false);
+    
     // console.log(user);
   };
   useEffect(() => {
@@ -29,13 +35,36 @@ const Profile = () => {
   const check = () => {
     console.log(user);
   };
+
+  //! deleting the user ID for log out
+  const logout= async ()=>{
+    const response = await fetch("http://localhost:3000/user/logout",{
+      method: "GET",
+      credentials: "include"
+    })
+    const json = await response.json();
+    console.log(json)
+    navigate("/")
+  }
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
-        <section className="px-2 bg-white">
-          <section className="mt-2 items-center text-center bg-white">
+        <section className="px-2 py-2 bg-white">
+          <section className="flex items-center justify-between">
+            
+          <div className="  ">
+            
+            <ArrowBackSharpIcon
+              onClick={() => navigate(-1)}
+              className=" "
+              sx= {{fontSize: 32}}
+            />
+          </div>
+            <button onClick={()=>{logout()}} className="px-3 py-2 rounded-xl font-semibold  border-1 border border-[#6B84DD] text-sm ">Log Out</button>
+          </section>
+          <section className="mt-4 items-center text-center bg-white">
             <figure className="flex w-full items-center text-center content-center bg-white justify-center  ">
               <UserProfile width={"120px"} height={"120px"} />
             </figure>
@@ -67,13 +96,7 @@ const Profile = () => {
           </section>
         </section>
       )}
-      <button
-        onClick={() => {
-          check();
-        }}
-      >
-        Click me
-      </button>
+      
     </>
   );
 };

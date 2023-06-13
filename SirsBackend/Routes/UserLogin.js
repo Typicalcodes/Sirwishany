@@ -9,10 +9,10 @@ const session = require("express-session");
 router.post("/addAddress", async (req, res) => {
   const { city, place, state } = req.body;
 
-  if (req.session.user) {
+  if (req.session.user  && req.session.user.type === "Consumer") {
     try {
       const fu = await user.updateOne(
-        { phoneNo: req.session.user[0].phoneNo },
+        { phoneNo: req.session.user.data[0].phoneNo },
         {
           $push: {
             addresses: {
@@ -33,11 +33,11 @@ router.post("/addAddress", async (req, res) => {
   }
 });
 router.get("/fetchAddress", async (req, res) => {
-  if (req.session.user) {
+  if (req.session.user  && req.session.user.type === "Consumer") {
     try {
-      const fu = await user.find({ phoneNo: req.session.user[0].phoneNo });
+      const fu = await user.find({ phoneNo: req.session.user.data[0].phoneNo });
 
-      res.send(fu[0].addresses);
+      res.send({loggedin: true, data: fu[0].addresses});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -48,7 +48,7 @@ router.get("/fetchAddress", async (req, res) => {
 router.post("/bookingnow", async (req, res) => {
   const { date, time, worktype } = req.body;
   const { place, city, state } = req.body.address;
-  if (req.session.user) {
+  if (req.session.user && req.session.user.type === "Consumer") {
     try {
       const address = {
         place,
@@ -56,7 +56,7 @@ router.post("/bookingnow", async (req, res) => {
         state,
       };
       const fu = await user.updateOne(
-        { phoneNo: req.session.user[0].phoneNo },
+        { phoneNo: req.session.user.data[0].phoneNo },
         {
           $push: {
             bookings: {
@@ -77,6 +77,20 @@ router.post("/bookingnow", async (req, res) => {
   } else {
     res.send({ loggedin: false });
   }
+});
+
+router.get('/logout', (req, res) => {
+  // Delete session token
+  req.session.destroy(err => {
+    if (err) {
+      console.log('Error destroying session:', err);
+    } else {
+      console.log('Session token deleted successfully');
+      res.json({deleted: "yeas"})
+    }
+    // Redirect or respond as desired
+    
+  });
 });
 
 module.exports = router;

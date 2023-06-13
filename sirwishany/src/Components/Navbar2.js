@@ -105,7 +105,7 @@ const Navbar2 = () => {
                 </Link>
               ) : (
                 <Link
-                  to="/login"
+                  to={{pathname: "/login", search: `?page=m`}}
                   className="font-merrisans bg-[#313335] text-white font-semibold rounded-full px-[24px] py-[8px]"
                 >
                   Login

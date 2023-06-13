@@ -59,7 +59,7 @@ async (req, res) => {
   const userdata = await user.find({ phoneNo: req.body.phoneNo });
 
   if (userdata.length > 0) {
-    req.session.user = userdata;
+    req.session.user = {type: "Consumer", data:userdata};
     res.json(userdata);
   } else {
     try {
@@ -78,8 +78,9 @@ async (req, res) => {
 
 //! for check login
 app.get("/user/login", async (req,res)=>{ 
-  if (req.session.user){
-    const userdata = await user.find({ phoneNo: req.session.user[0].phoneNo });
+  if (req.session.user && req.session.user.type === "Consumer"){
+    console.log(req.session.user)
+    const userdata = await user.find({ phoneNo: req.session.user.data[0].phoneNo });
     res.send({loggedin: true, user: userdata})
     console.log(userdata)
   }else{

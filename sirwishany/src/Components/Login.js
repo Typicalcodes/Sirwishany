@@ -9,10 +9,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { openlogin } from "../redux/actionCreators/Index";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams, redirect } from "react-router-dom";
 import { ProfLogo } from "./Item Description/svgimports";
 const Login = () => {
-  const navigate = useNavigate();
+   let [searchParams] = useSearchParams();
+   let page = searchParams.get("page");
+ const navigate = useNavigate();
   const location = useLocation();
   const [otp, setOtp] = useState("");
   const [Ph, setPh] = useState("");
@@ -88,9 +90,10 @@ const Login = () => {
           console.log(response);
           setTimeout(() => {
             console.log("back");
-            navigate(-1);
-            if (location.pathname === "/login") {
-              navigate("/booking");
+            if (page === "m") {
+              navigate("/");
+            }else if (page === "b"){
+             navigate(-2)
             }
           }, 500);
           toast.success("Logged in Successfully");
@@ -145,7 +148,7 @@ const Login = () => {
       </div>
       {proflogin && (
         <figure className="flex  items-center object-cover justify-center opacity-animation ">
-          {" "}
+
           <ProfLogo width="15rem" height="15rem" />
         </figure>
       )}
