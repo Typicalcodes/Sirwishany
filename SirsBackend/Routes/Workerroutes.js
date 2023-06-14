@@ -11,10 +11,11 @@ async (req, res) => {
   // }
   const userdata = await Prof.find({ phoneNo: req.body.phoneNo });
 
-  if (userdata.length > 0) {
+  if (userdata.length > 0 && userdata[0].name !== "Not Named") {
+    console.log(userdata.name)
     req.session.user = userdata;
     res.json(userdata);
-  } else {
+  } else if (!userdata){
     try {
       const data = new Prof({
         phoneNo: req.body.phoneNo
@@ -25,6 +26,8 @@ async (req, res) => {
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
+  }else if (userdata[0].name === "Not Named"){
+    res.json({newuser: true})
   }
  
  

@@ -9,7 +9,7 @@ const Footer = () => {
     console.log(logn)
   }
   return (
-    <div className="bg-white px-[8px] flex-col  py-[8px] mt-2 mb-2 ">
+    <div className="bg-white px-[8px] flex-col  py-[8px] mt-2 mb-2 order-last ">
       <span className="text-lg font-bold font-merrisans mt-4">Sirwishany</span>
       <br />
       <div className="ml-4 mt-2">

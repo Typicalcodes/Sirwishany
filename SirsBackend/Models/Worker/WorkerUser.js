@@ -19,6 +19,7 @@ const Prof = new Schema({
   phoneNo: { type: Number, unique: true, required: true },
   name: { type: String,default: "Not Named"},
   worktype: { type: String, default: "Not Specified" },
+  address: address,
   status: { type: String, default: "off" },
   bookings: [ibooking],
 });

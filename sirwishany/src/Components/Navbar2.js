@@ -10,6 +10,7 @@ import {
 } from "../redux/actionCreators/Index";
 import { UserProfile } from "./Item Description/svgimports";
 import Loading from "../Components/Item Description/Loading";
+import Footer from "./Footer";
 const Navbar2 = () => {
  
   const dispatch = useDispatch();
@@ -188,8 +189,9 @@ const Navbar2 = () => {
               />
             </div>
           </div>
+          
         </div>
-
+        
   
     </>
   );

@@ -35,7 +35,7 @@ function App() {
         <Route exact path="/firstlogin" Component={Firstlogin}/>
       
       </Routes>
-      <Footer  />
+      
     </div>
   );
 }
