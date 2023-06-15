@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { TextField } from "@mui/material";
+import toast, { Toaster } from "react-hot-toast";
+import {useNavigate} from "react-router-dom";
 const Firstlogin = () => {
+  const navigate = useNavigate();
   const typeswork = ["Electrician", "Mechanic", "Cleaner", "Cook"];
   const cities = {
     "Uttar Pradesh": ["Agra", "Mathura", "Lucknow", "Kanpur"],
@@ -12,8 +15,8 @@ const Firstlogin = () => {
   const [seState, setState] = useState(null);
   const [cityse, setCityse] = useState(null);
   const [Name, setName] = useState(null);
-  const [Worktype, setWorktype] = useState(null);
-  const [Status, setStatus] = useState(null); 
+  const [Worktype, setWorktype] = useState("Electrician");
+  const [Status, setStatus] = useState("Active"); 
   const setCity = (item) => {
     setState(item);
     setseCity(cities[item]);
@@ -26,6 +29,7 @@ const Firstlogin = () => {
   //* to add address on saving
   let error = false;
   const [errorshow, setErrorshow] = useState(false);
+  const [errorname, setErrorname] = useState("")
   const saveprofile = async () => {
     error = false;
     //!await is necessary when setting states sometimes
@@ -33,24 +37,52 @@ const Firstlogin = () => {
 
     if (Place.length < 5) {
       error = true;
-    } else {
-      error = false;
+      setErrorname("Write a long address")
+    } else if (checked === false){
+      error = true;
+      setErrorname("Check the Terms and Conditions")
+    } else{
+      error =false;
     }
+    
 
     setErrorshow(error);
-    console.log(cityse,seState,Place);
-    console.log(Name, Worktype)
+
     if (error === false) {
-      const savedata = {
-        city: cityse,
-        state: seState,
-        place: Place,
-      };
+      const data = {
+        address: {
+    
+          city: cityse,
+          state: seState,
+          place: Place,
+        },
+        name: Name,
+        status: Status,
+        worktype: Worktype
+      }
+      const response = await fetch("http://localhost:3000/prof/updateuser", {
+        method : "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      })
+      const json = await response.json()
+      if (json.loggedin === false){
+        navigate({pathname: "/login", search: `?page=m`})
+      }
     }
   };
+
+  //*checkbox control
+  const [checked, setChecked] = useState(false)
   return (
-    <section className="items-center p-4 mt-12 bg-white">
-      <header className="text-center text-2xl font-bold p-2 mb-2">
+    <>
+     <Toaster toastOptions={{ duration: 2000 }} />
+    <section className="items-center p-4 mt-8 bg-white">
+    
+      <header className="text-center mt-2 text-2xl font-bold p-2 mb-2">
         Create Account
       </header>
       <div className="flex flex-col text-left px-2 ">
@@ -75,7 +107,7 @@ const Firstlogin = () => {
           Address
         </label>
         <div className="space-y-2     rounded-md  mb-2 fade-transition mt-1 ">
-        <input placeholder="Write your address" className="w-full px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#6B84DD] focus:border-blue-500 mt-1" />
+        <input onChange={(event)=>{setPlace(event.target.value)}} placeholder="Write your address" className="w-full px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#6B84DD] focus:border-blue-500 mt-1" />
 
           <section>
             <section className="flex justify-evenly space-x-2">
@@ -121,22 +153,15 @@ const Firstlogin = () => {
               </select>
             </section>
           </section>
-          <div className="flex justify-between items-center ">
-            {errorshow && (
-              <span
-                className={`text-red-700 font-semibold ${
-                  errorshow ? "error-change " : "error-change back"
-                }`}
-              >
-                Write a long address
-              </span>
-            )}
-            <div className="">
+          <div className="flex flex-col justify-between   ">
+          <div className="">
               <span className="align-text-top text-red-600">Note:-</span>
               <span className="text-sm font-merrisans">
                 Gigs will be given to you on the basis of your District.
               </span>
             </div>
+            
+           
           </div>
         </div>
         <label className="text-left font-merrisans font-semibold mt-4">
@@ -146,12 +171,23 @@ const Firstlogin = () => {
           <option className="w-full px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#6B84DD] focus:border-blue-500">Active</option>
           <option className="w-full px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#6B84DD] focus:border-blue-500">Inactive</option>
         </select>
-        <section className="mt-6 text-center">        
-        <input type="checkbox" id="tccheckbox"/> <label htmlFor="tccheckbox">I agree to the terms and conditions.</label>
+        {errorshow && (
+              <span
+                className={`text-red-700 text-center items-center mt-2   flex justify-center font-semibold ${
+                  errorshow ? "error-change " : "error-change back"
+                }`}
+              >
+                {errorname}
+              </span>
+            )}
+        <section className="mt-2 text-center">        
+        <input type="checkbox" id="tccheckbox" checked={checked} onChange={()=>{setChecked(!checked);  console.log(checked)}}/> <label htmlFor="tccheckbox">I agree to the terms and conditions.</label>
         </section >
-          <button onClick={()=>{saveprofile()}} className="rounded-full border mx-auto px-4 py-1 text-lg font-bold mt-4 bg-[#6B84DD] text-white"> Submit </button>  
+          <button onClick={()=>{if (Name && Worktype && Status && cityse && setState ){ saveprofile()}else{ toast.error("Fill all Details")}}} className="rounded-full border mx-auto px-4 py-1 text-lg font-bold mt-4 bg-[#6B84DD] text-white"> Submit </button>  
       </div>
+     
     </section>
+    </>
   );
 };
 

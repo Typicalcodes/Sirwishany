@@ -112,6 +112,8 @@ const Login = () => {
        
             if (json.newuser) {
               navigate("/firstlogin");
+            }else {
+              navigate("/profdashboard")
             }
           }, 500);
           toast.success("Logged in Successfully");

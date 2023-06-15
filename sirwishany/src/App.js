@@ -13,6 +13,7 @@ import Profile from "./Components/User/Profile";
 import { useEffect } from "react";
 import Bookpage from "./Components/BookingPage/Bookpage";
 import Firstlogin from "./Components/ForProffesional/Firstlogin";
+import WorkerDashboard from "./Components/ForProffesional/WorkerDashboard";
 function App() {
   
   const logn = useSelector((state) => state.loginopen);
@@ -33,7 +34,8 @@ function App() {
         <Route exact path="/booking" Component={Bookpage} />
         <Route exact path="/login" Component={Login}/>
         <Route exact path="/firstlogin" Component={Firstlogin}/>
-      
+        <Route exact path="/profdashboard" Component={WorkerDashboard}/>
+        
       </Routes>
       
     </div>
