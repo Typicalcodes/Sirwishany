@@ -98,7 +98,7 @@ const Login = () => {
           }, 500);
           toast.success("Logged in Successfully");
         } else {
-          const response = await fetch("http://localhost:3000/prof/createuser",{
+          const response = await fetch("http://localhost:3000/prof/login",{
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -135,6 +135,23 @@ const Login = () => {
     }
   };
 
+  const logincheck =async ()=>{
+    const response = await fetch("http://localhost:3000/prof/login",{
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json"
+      },
+      credentials: "include"
+    })
+    const json = await response.json();
+   
+    if (json.loggedin === true){
+      navigate("/profdashboard")
+    }
+  }
+  if (proflogin === true){
+    logincheck();
+  }
   return (
     <div className="absolute top-0 right-0 w-full  bg-gray-200 h-screen p-2 z-50 mx-auto border">
       <Toaster toastOptions={{ duration: 4000 }} />

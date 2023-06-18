@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Prof = require("../Models/Worker/WorkerUser");
 
-router.use("/createuser",
+router.post("/login",
 async (req, res) => {
 
   // const errors = validationResult(req);
@@ -10,29 +10,30 @@ async (req, res) => {
   //   return res.status(400).json({ errors: errors.array() });
 
   const userdata = await Prof.find({ phoneNo: req.body.phoneNo });
-
+  console.log(userdata)
   if (userdata.length > 0 && userdata[0].name !== "Not Named") {
-    req.session.user = userdata;
-    console.log(userdata[0].name)
+    req.session.user = {type: "Prof",data: userdata};
     res.json(userdata);
-  } else if (!userdata){
+    console.log(userdata[0].name)
+  } else if (userdata.length ==0){
+    
     try {
-      const data = new Prof({
-        phoneNo: req.body.phoneNo
+    const data = new Prof({
+      phoneNo: req.body.phoneNo
       })
       const saves = await data.save();
-      req.session.user = {type: "Prof",data: saves};
-      res.json({newuser: true, user: saves})
+      req.session.user = {type: "Prof",data: [saves]};
+      res.json({newuser: true, data: saves})
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
-  }else if (userdata[0].name === "Not Named"){
+  }else if (userdata.length > 0 && userdata[0].name === "Not Named"){
     
     req.session.user = {type: "Prof", data : userdata};
     res.json({newuser: true})
+  }else {
+    res.json({error: "erorrs now"})
   }
- 
- 
  }
 )
 router.get("/login", async (req,res)=>{ 

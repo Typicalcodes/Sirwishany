@@ -82,6 +82,48 @@
   animation: opanimate 1s forwards;
   
 }
+.slider{
+  position: absolute;
+  display: inline-block;
+  width: 100px;
+  height: 33px;
+  transition: 0.5s; 
+  background-color: white;
+  border: 2px solid gray;
+  border-radius: 25px;
+}
+.slider::before{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  right: 0;
+  display: flex;
+  content: "Active";
+  font-weight: bolder;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  text-align: center;
+  width: 50px;
+  height: 24px;
+  color: white;
+  top: 3px;
+  left: 3px;
+  background-color: green;
+  border-radius: 25px;
+  -webkit-transition: .4s;
+  transition: .4s;
+  
+}
+
+.mycheckbox:checked + .slider::before{
+  -webkit-transform: translateX(40px);
+  -ms-transform: translateX(40px);
+  transform: translateX(40px);
+  background-color: red;
+  content: "Inactive";
+}
 
 @keyframes opanimate {
   from{
