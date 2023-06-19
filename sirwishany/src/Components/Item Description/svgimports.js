@@ -129,8 +129,6 @@ const ProfLogo = (props) => {
         xmlns="http://www.w3.org/2000/svg"
         className="flex items-center relative "
       >
-        
-        
         <g id="SVGRepo_iconCarrier" className="absolute">
           <path d="M65.3,51.5A14.25,14.25,0,1,0,79.5,65.8,14.32,14.32,0,0,0,65.3,51.5ZM67.8,67a3.09,3.09,0,0,1-1.1-.2l-5.4,5.4a1.71,1.71,0,0,1-1.1.5c-.5,0-.9-.1-1.1-.5a1.82,1.82,0,0,1,0-2.4l5.4-5.4a4.47,4.47,0,0,1,4-5.8,3.09,3.09,0,0,1,1.1.2c.2,0,.2.2.1.4l-2.5,2.4a.37.37,0,0,0,0,.6l1.6,1.6a.48.48,0,0,0,.7,0l2.4-2.4c.1-.1.5-.1.5.1a6.53,6.53,0,0,1,.2,1.1A4.47,4.47,0,0,1,67.8,67Z"></path>
           <circle cx="44.6" cy="36.1" r="16.1"></circle>
@@ -141,4 +139,69 @@ const ProfLogo = (props) => {
   );
 };
 
-export { AC, UserProfile, Addresslogo, ProfLogo };
+const Cross = (props) => {
+  return (
+    <div>
+      <svg
+        width={props.width}
+        height={props.height}
+        viewBox="8 8 8 8"
+        stroke="black"
+        strokeWidth="2px"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="#d24b4b"
+      >
+        <line
+          fill="none"
+          stroke="#c25b5b"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          x1="14.5"
+          x2="9.5"
+          y1="9.5"
+          y2="14.5"
+        ></line>
+        <line
+          fill="none"
+          stroke="#c25b5b"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          x1="14.5"
+          x2="9.5"
+          y1="14.5"
+          y2="9.5"
+        ></line>
+      </svg>
+    </div>
+  );
+};
+
+const Tick = (props) => {
+  return (
+    <div>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        width={props.width}
+        height={props.height}
+        xmlns="http://www.w3.org/2000/svg"
+        stroke="#75ea8d"
+      >
+        
+
+          <path
+            d="M4.89163 13.2687L9.16582 17.5427L18.7085 8"
+            stroke="#75ea8d"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+
+      </svg>
+    </div>
+  );
+};
+
+export { AC, UserProfile, Addresslogo, ProfLogo, Cross, Tick};

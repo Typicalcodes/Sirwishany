@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserProfile } from "../Item Description/svgimports";
+import { Cross, UserProfile, Tick } from "../Item Description/svgimports";
 const WorkerDashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -56,14 +56,15 @@ const WorkerDashboard = () => {
                 Log Out
               </button>
             </section>
-            <section className="border-2 mt-2 rounded-lg px-8 py-2">
-              <section className="flex pt-2  space-x-2 justify-around w-40 mx-auto items-center    mx-auto    ">
-                <div className=" text-base font-semibold ">Status : </div>
+            <section className="border-2 border-[#020614] mt-4 rounded-lg px-8 py-2">
+              <section className="flex pt-2  space-x-2 justify-around  mx-auto items-center       ">
                 <section>
-                  <label className=" bg-white relative  items-center flex justify-center ">
+                  <label className=" bg-white relative    ">
+                <span className=" absolute right-0 text-base font-semibold ">Status : </span>
                     <input
                       type="checkbox"
-                      className="appearance-none mycheckbox"
+
+                      className="appearance-none w-0 h-0 mycheckbox"
                     />
                     <span className="slider  "></span>
                   </label>
@@ -81,7 +82,44 @@ const WorkerDashboard = () => {
               </section>
             </section>
             <header className="text-left font-bold text-2xl py-4">Jobs</header>
-            <span></span>
+            <section className="flex justify-around ">
+              <div className="text-lg font-bold text-[#020614] w-full text-center  ">
+                Current
+              </div>
+              <div className="text-lg font-bold text-[#020614] w-full text-center  ">
+                Previous
+              </div>
+            </section>
+            <section>
+              <div className=" border-2  border-[#6B84DD] rounded-md p-1 my-4 ">
+                <span className="flex items-center justify-between">
+                  <div>
+                  <span className=" pr-2  font-semibold">Date :</span>
+                  <span className="font-medium">22-03-2023</span>
+                  </div>
+                  <div>
+                  <span className=" pr-2  font-semibold">Time :</span>
+                  <span className="font-medium">05:00 AM</span>
+                  </div>
+                </span>
+                <h1 className="  font-semibold  "> Address :</h1>
+                <span> H-21 Shastripuram Sikandra, Uttar Pradesh Agra </span>
+                <div className="flex justify-around">
+              <button class="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
+                <Tick width="30px" height="30px"/>
+                
+                <span>Accept</span>
+                
+              </button>
+              <button class="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
+                <Cross width="20px" height="20px"/>
+                
+                <span>Reject</span>
+                
+              </button>
+              </div>
+              </div>
+            </section>
           </section>
         </>
       )}

@@ -85,8 +85,8 @@ const Profile = () => {
                   <span className="flex">
                   <span className=" pr-2 text-sm font-semibold">Date : </span>
                   <span className=" text-sm">{item.date.split("T")[0]}</span>
-                  
-                  </span>
+      
+                  </span> 
                   <h1 className="font-bold text-lg">{item.worktype}</h1>
                 </div>
                 
