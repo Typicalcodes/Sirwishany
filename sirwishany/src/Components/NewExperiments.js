@@ -7,11 +7,11 @@ const NewExperiments = () => {
     const socket = io.connect("http://localhost:3000");
 
     // Listen for WebSocket messages
-    socket.on("dataUpdate", (data) => {
+    socket.on("updatejob", (data) => {
       console.log("Received message:", data);
       setDatavalue(data);
-      // Update your component's state with the received data
-      // ...
+      // Update your component's state  with the received data
+      
     });
 
     // Clean up the WebSocket connection on component unmount

@@ -10,6 +10,7 @@ import { TextField } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import toast, { Toaster } from "react-hot-toast";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
+import io from "socket.io-client";
 const Bookpage = () => {
   // theming
   const theme = createTheme({
@@ -166,6 +167,13 @@ const Bookpage = () => {
     setSelectedDate(event.target.value);
   };
   //todo final api for booking database
+  const socket = io.connect("http://localhost:3000", {
+    allowedHeaders: {
+      "Access-Control-Allow-Origin": true,
+    },
+    credentials: true,
+  });
+  const [finaldata, setFinaldata] = useState(null);
   const booknow = async () => {
     if (selectedDate && selectedSlot && selectedAddress) {
       console.log(selectedDate, selectedSlot, selectedAddress);
@@ -179,7 +187,11 @@ const Bookpage = () => {
           city: selectedAddress.city,
         },
       };
+     
       console.log(data);
+
+      // Listen for WebSocket messages
+      await socket.emit("booking", data);
       const response = await fetch("http://localhost:3000/user/bookingnow", {
         method: "POST",
         headers: {
@@ -195,22 +207,25 @@ const Bookpage = () => {
     }
   };
 
+  //todo creating a socket funcionatlites to send bookings to server
+  // Establish a WebSocket connection
+
+  // Clean up the WebSocket connection on component unmount
+
   return (
     <>
       <Toaster toastOptions={{ duration: 2000 }} />
 
       <ThemeProvider theme={theme}>
         <section className="bg-white mx-auto px-2">
-          
           <div className="flex items-center justify-center mt-2">
-          <div className=" rounded-full">
-            
-            <ArrowBackSharpIcon
-              onClick={() => navigate(-1)}
-              className=" "
-              sx = {{fontSize: 28}}
-            />
-          </div>
+            <div className=" rounded-full">
+              <ArrowBackSharpIcon
+                onClick={() => navigate(-1)}
+                className=" "
+                sx={{ fontSize: 28 }}
+              />
+            </div>
             <header className="text-center text-2xl mx-auto my-2 font-semibold  text-[#020614]">
               {cattype}
             </header>
