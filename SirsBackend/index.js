@@ -1,12 +1,11 @@
 const connecttomongo = require("./db");
 connecttomongo();
-
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-
+const Prof = require("../SirsBackend/Routes/Workerroutes");
 const user = require("../SirsBackend/Models/User/CreateUser");
 const { body, validationResult } = require("express-validator");
 const { cookie } = require("express-validator");
@@ -105,15 +104,17 @@ app.get("/user/login", async (req,res)=>{
 
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log("A user connected");  
 
   // Handle WebSocket messages
-  socket.on("message", (data) => {
-    console.log("Received message:", data);
-
+  socket.on("booking", async (phoneno) => {
+    socket.join(phoneno)
+    
+    socket.emit("user is connected")
     // Process the received message, update the data in MongoDB if necessary,
     // and emit the updated data to connected clients
-    // ...
+  
+    io.emit("updatejob",data)
   });
 
 
