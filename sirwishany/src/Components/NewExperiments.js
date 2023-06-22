@@ -13,7 +13,7 @@ const NewExperiments = () => {
       // Update your component's state  with the received data
       
     });
-
+    
     // Clean up the WebSocket connection on component unmount
     return () => {
       socket.disconnect();

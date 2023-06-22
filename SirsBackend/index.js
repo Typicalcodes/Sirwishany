@@ -107,14 +107,14 @@ io.on("connection", (socket) => {
   console.log("A user connected");  
 
   // Handle WebSocket messages
-  socket.on("booking", async (phoneno) => {
-    socket.join(phoneno)
-    
+  socket.on("booking", async (userData) => {
+    //socket.join()
+    console.log("We get userdata",userData)
     socket.emit("user is connected")
     // Process the received message, update the data in MongoDB if necessary,
     // and emit the updated data to connected clients
   
-    io.emit("updatejob",data)
+    
   });
 
 
