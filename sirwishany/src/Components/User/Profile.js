@@ -16,24 +16,24 @@ const Profile = () => {
       credentials: "include",
     });
     const json = await response.json();
-    console.log(json);
+    //console.log(json);
     if (json.loggedin === true) {
       await setUser(json);
-      console.log(user);
+      //console.log(user);
       setLoading(false);
     }else{
       setLoading(true)
     }
-    console.log(user);
+    //console.log(user);
     
-    // console.log(user);
+    // //console.log(user);
   };
   useEffect(() => {
     setprofile();
   }, []);
   // to check updated state
   const check = () => {
-    console.log(user);
+    //console.log(user);
   };
 
   //! deleting the user ID for log out
@@ -43,7 +43,7 @@ const Profile = () => {
       credentials: "include"
     })
     const json = await response.json();
-    console.log(json)
+    //console.log(json)
     navigate("/")
   }
   return (

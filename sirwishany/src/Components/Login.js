@@ -59,7 +59,7 @@ const Login = () => {
         toast.success("Otp Sended Succesfully");
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
         setLoading(false);
 
         // ...
@@ -71,9 +71,9 @@ const Login = () => {
     setLoading(true);
     try {
       await window.confirmationResult.confirm(otp).then(async (res) => {
-        console.log(res.user.metadata);
+        //console.log(res.user.metadata);
         setUser(res.user);
-        console.log(Ph);
+        //console.log(Ph);
         const data = {
           phoneNo: Ph,
         };
@@ -87,9 +87,9 @@ const Login = () => {
             body: JSON.stringify(data),
             credentials: "include",
           });
-          console.log(response);
+          //console.log(response);
           setTimeout(() => {
-            console.log("back");
+            //console.log("back");
             if (page === "m") {
               navigate("/");
             }else if (page === "b"){
@@ -107,15 +107,15 @@ const Login = () => {
             credentials: "include",
           })
           const json= await response.json();
-          console.log(json)
-          setTimeout(() => {
+          //console.log(json)
+        
        
             if (json.newuser) {
               navigate("/firstlogin");
-            }else {
+            }else if (!json.newuser) {
               navigate("/profdashboard")
             }
-          }, 500);
+      
           toast.success("Logged in Successfully");
         }
 
@@ -124,7 +124,7 @@ const Login = () => {
         
       });
     } catch (error) {
-      console.error(error.code);
+      //console.error(error.code);
       if (error.code === "auth/code-expired") {
         toast.error("Otp Expired");
       } else {
@@ -144,7 +144,7 @@ const Login = () => {
       credentials: "include"
     })
     const json = await response.json();
-   
+   //console.log(json)
     if (json.loggedin === true){
       navigate("/profdashboard")
     }

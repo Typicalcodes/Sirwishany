@@ -8,7 +8,7 @@ const Featurepage = () => {
   //   timerRef.current = setInterval(() => {
   //     setCurrentIndex((currentIndex + 1) % 4);
   //   }, 5000);
-  //   console.log(currentIndex)
+  //   //console.log(currentIndex)
   //   return () => clearInterval(timerRef.current);
   // }, [currentIndex]);
 

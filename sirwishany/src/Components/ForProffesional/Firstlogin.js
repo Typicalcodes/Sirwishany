@@ -69,6 +69,9 @@ const Firstlogin = () => {
         body: JSON.stringify(data)
       })
       const json = await response.json()
+      if (json.acknowledged === true){
+        navigate("/profdashboard")
+      }
       if (json.loggedin === false){
         navigate({pathname: "/login", search: `?page=m`})
       }
@@ -181,7 +184,7 @@ const Firstlogin = () => {
               </span>
             )}
         <section className="mt-2 text-center">        
-        <input type="checkbox" id="tccheckbox" checked={checked} onChange={()=>{setChecked(!checked);  console.log(checked)}}/> <label htmlFor="tccheckbox">I agree to the terms and conditions.</label>
+        <input type="checkbox" id="tccheckbox" checked={checked} onChange={()=>{setChecked(!checked)}}/> <label htmlFor="tccheckbox">I agree to the terms and conditions.</label>
         </section >
           <button onClick={()=>{if (Name && Worktype && Status && cityse && setState ){ saveprofile()}else{ toast.error("Fill all Details")}}} className="rounded-full border mx-auto px-4 py-1 text-lg font-bold mt-4 bg-[#6B84DD] text-white"> Submit </button>  
       </div>

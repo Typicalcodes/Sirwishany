@@ -5,7 +5,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const Prof = require("../SirsBackend/Routes/Workerroutes");
+const Prof = require("../SirsBackend/Models/Worker/WorkerUser");
 const user = require("../SirsBackend/Models/User/CreateUser");
 const { body, validationResult } = require("express-validator");
 const { cookie } = require("express-validator");
@@ -55,6 +55,7 @@ app.use("/prof", require("./Routes/Workerroutes"))
 
 const server = http.createServer(app);
 const io = socketIO(server,{
+  pingTimeout: 60000,
   cors: {
     origin: "http://localhost:3001",
     allowedHeaders: {
@@ -108,16 +109,20 @@ io.on("connection", (socket) => {
 
   // Handle WebSocket messages
   socket.on("booking", async (userData) => {
-    //socket.join()
+    socket.join(userData.user)
     console.log("We get userdata",userData)
-    socket.emit("user is connected")
+    try {
+      console.log(userData.tosend.worktype)
+      const response = await Prof.find({worktype: userData.tosend.worktype, 'address.city': userData.tosend.address.city, 'address.state': userData.tosend.address.state})
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
     // Process the received message, update the data in MongoDB if necessary,
     // and emit the updated data to connected clients
-  
-    
   });
 
-
+  
   // Handle disconnection
   socket.on("disconnect", () => {
     console.log("A user disconnected");

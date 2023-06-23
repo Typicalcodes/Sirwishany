@@ -26,7 +26,7 @@ const Categoryadd = () => {
       formData.append('choices[]', choices[i]);
     }
     formData.append("image", image, "image.jpg");
-    console.log(name, Includes);
+    //console.log(name, Includes);
     await fetch(`http://localhost:3000/cat/categoryAdd`, {
       method: "POST",
       applicationType: JSON,
@@ -67,13 +67,13 @@ const handleUpload = async (event) => {
     applicationType: JSON,
     body: formData,
   });
-  console.log(svg)
+  //console.log(svg)
   if (!response.ok) {
     throw new Error(`Error uploading SVG file: ${response.status}`);
   }
 
   const result = await response.text();
-  console.log(result); // "SVG file saved to database"
+  //console.log(result); // "SVG file saved to database"
 };
 
 const handleSvgChange = (event) => {
@@ -89,9 +89,9 @@ const setprofile = async () => {
     credentials: 'include'
   })
   const json = await response.json();
-  console.log(json)
+  //console.log(json)
   
-  // console.log(user);
+  // //console.log(user);
 };
   return (
     <>

@@ -10,11 +10,11 @@ async (req, res) => {
   //   return res.status(400).json({ errors: errors.array() });
 
   const userdata = await Prof.find({ phoneNo: req.body.phoneNo });
-  console.log(userdata)
+  //console.log(userdata)
   if (userdata.length > 0 && userdata[0].name !== "Not Named") {
     req.session.user = {type: "Prof",data: userdata};
     res.json(userdata);
-    console.log(userdata[0].name)
+    //console.log(userdata[0].name)
   } else if (userdata.length ==0){
     
     try {
@@ -38,10 +38,16 @@ async (req, res) => {
 )
 router.get("/login", async (req,res)=>{ 
   if (req.session.user && req.session.user.type === "Prof"){
-    console.log(req.session.user)
+    //console.log(req.session.user)
     const userdata = await Prof.find({ phoneNo: req.session.user.data[0].phoneNo });
-    res.send({loggedin: true, user: userdata})
-    console.log(userdata) 
+    if(userdata.name=== "Not Named"){
+      res.send({loggedin:false})
+    }
+    else{
+      res.send({loggedin: true, user: userdata})
+
+    }
+    //console.log(userdata) 
   }else{
     res.send({loggedin: false})
   }
@@ -58,6 +64,28 @@ router.post("/updateuser", async (req,res)=>{
         },
         { new: true }
       );
+
+      res.send(fu);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  } else {
+    res.send({ loggedin: false });
+  }
+})
+router.post("/updatestate", async (req,res)=>{ 
+  const { status } = req.body;
+
+  if (req.session.user && req.session.user.type === "Prof") {
+    try {
+      
+      const fu = await Prof.updateOne(
+        { phoneNo: req.session.user.data[0].phoneNo },
+        {status
+        },
+        { new: true }
+      );
+      
 
       res.send(fu);
     } catch (error) {

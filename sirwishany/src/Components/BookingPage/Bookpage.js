@@ -30,6 +30,7 @@ const Bookpage = () => {
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
   let cattype = searchParams.get("type");
+  let maintype = searchParams.get("category")
   let city = searchParams.get("city");
   const [User, setUser] = useState(null);
   //*state for selected slot
@@ -58,14 +59,14 @@ const Bookpage = () => {
     });
     const json = await response.json();
 
-    console.log(json);
+    //console.log(json);
 
     if (json.loggedin === true) {
       await setUser(json.data);
     } else if (json.loggedin === false) {
       navigate({ pathname: "/login", search: `?page=b` });
     }
-    // console.log(user);
+    // //console.log(user);
   };
   useEffect(() => {
     setprofile();
@@ -88,7 +89,7 @@ const Bookpage = () => {
   const setCity = (item) => {
     setState(item);
     setseCity(cities[item]);
-    //console.log(cities[item]);
+    ////console.log(cities[item]);
   };
 
   //* values for saving address
@@ -116,9 +117,9 @@ const Bookpage = () => {
         state: seState,
         place: Place,
       };
-      // console.log(cityse)
-      // console.log(seState)
-      // console.log(Place)
+      // //console.log(cityse)
+      // //console.log(seState)
+      // //console.log(Place)
       const response = await fetch("http://localhost:3000/user/addAddress", {
         method: "POST",
         headers: {
@@ -132,10 +133,9 @@ const Bookpage = () => {
         setprofile();
       }
 
-      console.log(json);
+      //console.log(json);
     }
   };
-  //changing styling on select of addrwss
   const [selectedAddress, setSelectedAddress] = useState(null);
   const selectaddress = (add) => {
     setSelectedAddress(add);
@@ -176,22 +176,24 @@ const Bookpage = () => {
   const [finaldata, setFinaldata] = useState(null);
   const booknow = async () => {
     if (selectedDate && selectedSlot && selectedAddress) {
-      console.log(selectedDate, selectedSlot, selectedAddress);
+      //console.log(selectedDate, selectedSlot, selectedAddress);
       const data = {
         date: selectedDate,
         time: selectedSlot,
-        worktype: cattype,
+        worktype: maintype,
         address: {
           place: selectedAddress.place,
           state: selectedAddress.state,
           city: selectedAddress.city,
         },
+        subtype: cattype
+
       };
      
-      console.log(data);
+      //console.log(data);
 
       // Listen for WebSocket messages
-      await socket.emit("booking", data);
+     
       const response = await fetch("http://localhost:3000/user/bookingnow", {
         method: "POST",
         headers: {
@@ -201,7 +203,8 @@ const Bookpage = () => {
         credentials: "include",
       });
       const json = await response.json();
-      console.log(json);
+      //console.log(json);
+      await socket.emit("booking", {"tosend":data, "user":json.userid});
     } else {
       toast.error("Fill Complete Information");
     }
@@ -328,7 +331,7 @@ const Bookpage = () => {
                     >
                       <option></option>
                       {seCity.map((item) => {
-                        //console.log(item);
+                        ////console.log(item);
                         return (
                           <option key={item} value={item}>
                             {item}

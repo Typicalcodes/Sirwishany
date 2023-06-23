@@ -59,7 +59,7 @@ const Navbar2 = () => {
       credentials: 'include'
     })
     const json = await response.json();
-    console.log(json)
+  //console.log(json)
     if (json.loggedin === true){
       setUser(true)
     }

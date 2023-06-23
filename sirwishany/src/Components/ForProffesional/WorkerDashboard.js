@@ -5,6 +5,8 @@ const WorkerDashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [statuschecked, setStatuschecked] = useState(null)
+
   const setProfile = async () => {
     const response = await fetch("http://localhost:3000/prof/login", {
       method: "GET",
@@ -18,26 +20,59 @@ const WorkerDashboard = () => {
     if (json.loggedin === false) {
       navigate({ pathname: "/login", search: `?page=m` });
     }
-    await setUser(json);
+   
+      
+   
+  
+    console.log(json.user[0].status)
+    if (json){
+      try {
+        if(json.user[0].status === "Active"){
+          
+          await setStatuschecked(false)
+        }else if(json.user[0].status === "Inactive"){
+          await setStatuschecked(true)
+        }
+        
+      } catch (error) {
+       console.log(error)
+      }}
 
+    await setUser(json)
     setLoading(false);
-    // console.log(user);
+    // //console.log(user);
   };
   useEffect(() => {
     setProfile();
-  }, []);
+  },[]);
   const logout = async () => {
     const response = await fetch("http://localhost:3000/user/logout", {
       method: "GET",
       credentials: "include",
     });
     const json = await response.json();
-    console.log(json);
+    //console.log(json);
     navigate("/");
   };
+  const updateState = async ()=>{
+    setStatuschecked(!statuschecked);
+    let status = statuschecked ? "Active": "Inactive"
+    const body = {
+      status: status
+    }
+    const response =  await fetch("http://localhost:3000/prof/updatestate",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body : JSON.stringify(body),
+      credentials: "include",
+    })
+    const json =  await response.json();
+  }
   return (
     <>
-      {user && (
+      {user &&  (
         <>
           <section className="bg-white  pt-4 px-2">
             <section className="bg-white flex w-full items-center justify-between">
@@ -63,7 +98,9 @@ const WorkerDashboard = () => {
                 <span className=" absolute right-0 text-base font-semibold ">Status : </span>
                     <input
                       type="checkbox"
-
+                      onChange={()=>{updateState()
+                      }}
+                      checked={statuschecked}
                       className="appearance-none w-0 h-0 mycheckbox"
                     />
                     <span className="slider  "></span>
@@ -105,13 +142,13 @@ const WorkerDashboard = () => {
                 <h1 className="  font-semibold  "> Address :</h1>
                 <span> H-21 Shastripuram Sikandra, Uttar Pradesh Agra </span>
                 <div className="flex justify-around">
-              <button class="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
+              <button className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
                 <Tick width="30px" height="30px"/>
                 
                 <span>Accept</span>
                 
               </button>
-              <button class="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
+              <button className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
                 <Cross width="20px" height="20px"/>
                 
                 <span>Reject</span>
@@ -121,6 +158,7 @@ const WorkerDashboard = () => {
               </div>
             </section>
           </section>
+          <button onClick={()=>{console.log(statuschecked)}}>clickeme</button>
         </>
       )}
     </>

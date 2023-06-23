@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const address = new Schema({
   place: { type: String },
-  city: { type: String },
+  city: { type: String , default: "Not added"},
   state: { type: String },
 });
 

@@ -72,7 +72,7 @@ router.post("/bookingnow", async (req, res) => {
         { new: true }
       );
 
-      res.send(fu);
+      res.json({status: fu, userid: req.session.user.data[0]._id});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
