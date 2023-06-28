@@ -12,6 +12,7 @@ const ibooking = new Schema({
   address: address,
   time: { type: String, required: true },
   worktype: { type: String, required: true },
+  subtype: { type: String   },
   status: { type: String, default: "active" },
 });
 
