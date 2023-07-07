@@ -16,6 +16,7 @@ import Firstlogin from "./Components/ForProffesional/Firstlogin";
 import WorkerDashboard from "./Components/ForProffesional/WorkerDashboard";
 import NewExperiments from "./Components/NewExperiments";
 import NewExperiments2 from "./Components/NewExperimentscopy";
+import Exper from "./Components/Exper";
 function App() {
   
   const logn = useSelector((state) => state.loginopen);
@@ -39,6 +40,7 @@ function App() {
         <Route exact path="/profdashboard" Component={WorkerDashboard}/>
         <Route exact path="/newexper" Component={NewExperiments}/>
         <Route exact path="/newexper2" Component={NewExperiments2}/>        
+        <Route exact path="/exper" Component={Exper}/>        
         </Routes>
       
     </div>

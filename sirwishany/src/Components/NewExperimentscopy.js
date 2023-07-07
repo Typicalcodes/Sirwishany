@@ -93,7 +93,7 @@ const NewExperiments2 = () => {
           </button>
       </div>
       </div>
-      }
+      
     </>
   );
 };

@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const Prof = require("../SirsBackend/Models/Worker/WorkerUser");
 const user = require("../SirsBackend/Models/User/CreateUser");
-const ChatData = require("../SirsBackend/Models/User/ChatData")
+const ChatData = require("../SirsBackend/Models/User/ChatData");
 const { body, validationResult } = require("express-validator");
 const { cookie } = require("express-validator");
 const app = express();
@@ -105,6 +105,7 @@ io.on("connection", (socket) => {
   // Handle WebSocket messages
   socket.on("booking", async (userData) => {
     console.log("We get userdata", userData);
+
     try {
       console.log(userData.tosend.worktype);
       const response = await Prof.updateMany(
@@ -112,6 +113,8 @@ io.on("connection", (socket) => {
           worktype: userData.tosend.worktype,
           "address.city": userData.tosend.address.city,
           "address.state": userData.tosend.address.state,
+          status: "Active",
+          $expr : { $lt: [{$size : '$bookings'},11]}
         },
         {
           $push: {
@@ -120,12 +123,12 @@ io.on("connection", (socket) => {
               time: userData.tosend.time,
               worktype: userData.tosend.worktype,
               address: userData.tosend.address,
-              subtype: userData.tosend.subtype
+              subtype: userData.tosend.subtype,
             },
           },
         }
       );
-
+ 
       const socketid = `${userData.tosend.worktype}${userData.tosend.address.city}${userData.tosend.address.state}`;
       socket.to(socketid).emit("job received", userData.tosend);
     } catch (error) {
@@ -146,15 +149,23 @@ io.on("connection", (socket) => {
     console.log("received message", message + socket.id);
     socket.to(data).emit("received message", message);
   });
-  //todo make a room with worktyp city and state and make worker chat join the same user
-  // Handle disconnection
+  //todo make a room with worktype city and state and make worker chat join the same user
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+    // Additional code to handle disconnection if needed
+  });
 });
 
-
-app.post('/createchat', (req,res)=>{
-  const {sender,receiver,message}= req.body.
-
-})
+app.post("/createchat", (req, res) => {
+  const customer = "Rohit";
+  const prof = "Arun";
+  try {
+    const response = user.find({
+      _id: customer,
+      chat: { $in: [{ customer, prof }] },
+    });
+  } catch (error) {}
+});
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

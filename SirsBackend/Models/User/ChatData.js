@@ -9,12 +9,12 @@ const chats = new Schema({
 })
   
 const chatdetail= new Schema({
-    chatdate: {type: Date},
+    chatdate: {type: Date, default: Date.now},
     chats
 })
   
 const chatData = new Schema({
-    user: {type: String},
+    customer: {type: String},
     prof : {type: String},
     chatfile: [chatdetail]
 });

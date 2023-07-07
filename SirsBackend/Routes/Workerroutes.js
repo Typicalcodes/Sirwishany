@@ -95,4 +95,17 @@ router.post("/updatestate", async (req,res)=>{
     res.send({ loggedin: false });
   }
 })
+router.get("/checkcount", async (req,res)=>{
+  const {id}=req.body
+try {
+  const response = await Prof.findById(
+    {
+      _id: id
+    }   
+  );
+  console.log(response)
+} catch (error) {
+  console.log(error)
+}
+})
 module.exports =router
