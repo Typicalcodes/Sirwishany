@@ -13,7 +13,6 @@ const ibooking = new Schema({
   time : {type: String, required: true},
   worktype : {type: String, required: true},
   status : {type: String, default: "active"}
-
 })
 
 //backend making chat with user sending it to place side by side
