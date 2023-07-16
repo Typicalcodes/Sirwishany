@@ -22,7 +22,7 @@ const WorkerDashboard = () => {
       credentials: "include",
     });
     const json = await response.json();
-    console.log(json)
+    
     if (json.loggedin === false) {
       navigate({ pathname: "/login", search: `?page=m` });
     }
@@ -59,6 +59,19 @@ const WorkerDashboard = () => {
     statusRef.current = status;
   }, [status]);
 
+
+
+  // NOTE: Function for API of fectching the count of bookings
+  const checksize  = async () => {
+    if (user){
+      const response = await fetch(`http://localhost:3000/prof/checkcount/${user.user[0]._id}`,{
+        method  : "GET",
+    
+      })
+      const json = await response.json()
+         return json.qty
+    }
+  }
   const logout = async () => {
     const response = await fetch("http://localhost:3000/user/logout", {
       method: "GET",
@@ -86,21 +99,35 @@ const WorkerDashboard = () => {
     });
     const json = await response.json();
   };
-  const onAccept = (item) => {
-    console.log(item);
-  };
+
+ 
   useEffect(() => {
 
   }, [jobData]);
 
-  const handleJobReceived = (userdata) => {
+  const handleJobReceived = async (userdata) => {
+    const trueuser = {
+      date : userdata.date + "T00:00:00.000Z",
+      time : userdata.time,
+      worktype :  userdata.worktype,
+      address : userdata.address,
+      subtype : userdata.subtype,
+      userid : userdata.userId
+    }
 
+    const response =  await checksize();
+    const tempdata = jobData;
+    console.log(trueuser)
+    if (tempdata.some(obj => { return obj.date === trueuser.date && obj.time === trueuser.time})){
+      console.log("same detected")
+    }else{
+    if (response && response <= 10){
 
     setJobData((prevState) => {
       if (statusRef.current === "Active") {
      
         try {
-          return [...prevState, userdata];
+          return [...prevState, trueuser];
         } catch (error) {
           console.log(error);
         }
@@ -110,10 +137,10 @@ const WorkerDashboard = () => {
           return [...prevState];
         } catch (error) {}
       }
-    });
+    })}};
   };
 
-  // useffect for adding the incoming jobs
+  // NOTE: useffect for adding the incoming jobs
 
   useEffect(() => {
     if (user) {
@@ -131,10 +158,33 @@ const WorkerDashboard = () => {
     };
   }, [statusRef.current]);
 
+
+   // NOTE: On accepting job
+   const onAccept = (item) => {
+    console.log(item);
+    socket.emit("send message",{data: item.userId, message : item})
+  };
+
+  // NOTE: On Rejecting job   
+  const onReject = async (item)=>{
+    setJobData(jobData.filter(job => {return job !== item} ))
+    const body= {
+      item
+    }
+    const response = await fetch(`http://localhost:3000/prof/deletejob/${user.user[0]._id}`,{
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body)
+    })
+    console.log(response)
+  }
   return (
     <>
       {user && (
         <>
+     
           <section className="bg-white  pt-4 px-2">
             <section className="bg-white flex w-full items-center justify-between">
               <section className="flex items-center space-x-2">
@@ -227,7 +277,7 @@ const WorkerDashboard = () => {
 
                           <span>Accept</span>
                         </button>
-                        <button className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
+                        <button onClick={()=>{onReject(item)}} className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
                           <Cross width="20px" height="20px" />
 
                           <span>Reject</span>

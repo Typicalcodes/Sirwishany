@@ -1,22 +1,33 @@
 import { React, useEffect, useState, useLayoutEffect, useRef } from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {Link} from "react-router-dom";
 import { bindActionCreators } from "redux";
+import io from "socket.io-client";
 import {
   changeCity,
   openlogin,
   changeService,
+  editnotification
 } from "../redux/actionCreators/Index";
 import { UserProfile } from "./Item Description/svgimports";
 import Loading from "../Components/Item Description/Loading";
 import Footer from "./Footer";
+
 const Navbar2 = () => {
- 
+  const notification = useSelector(state => state.editNotification)
+  const socket = io.connect("http://localhost:3000", {
+    allowedHeaders: {
+      "Access-Control-Allow-Origin": true,
+    },
+    credentials: true,
+  });
+
   const dispatch = useDispatch();
   const cityselect = bindActionCreators(changeCity, dispatch);
   const logindone = bindActionCreators(openlogin, dispatch);
   const ChangeServices = bindActionCreators(changeService, dispatch);
+  const EditNotification =  bindActionCreators(editnotification,dispatch)
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -61,7 +72,9 @@ const Navbar2 = () => {
     const json = await response.json();
   //console.log(json)
     if (json.loggedin === true){
-      setUser(true)
+         setUser(true)
+      console.log(json.user[0]._id);
+      socket.emit("create room",(json.user[0]._id ))
     }
     setLoading(false);
     // console.log(user);
@@ -69,6 +82,15 @@ const Navbar2 = () => {
   useEffect(() => {
     setprofile();
   }, []);
+
+  //FIXME - receiving message
+  useEffect(()=>{
+    socket.on("received message", (data)=>{
+      console.log(data)
+      EditNotification();
+      console.log(notification)
+    })
+  })
   // on clicking item
   const onClickItem = async (name, state, id, services) => {
     await setshowInput(true);
@@ -87,7 +109,7 @@ const Navbar2 = () => {
   };
   return ( 
     <>
-
+       <button>Click me to change notif</button>
         <div className="space-y-[8px] px-[8px] pt-[8px] bg-white ">
           <div className="flex items-center justify-between ">
             <div className="flex flex-col">
@@ -100,8 +122,11 @@ const Navbar2 = () => {
             </div>
 
             <div>
+              <div className="text-green-500 "></div>
               {user ? (
-                <Link to="/profile">
+                <Link onClick={()=>{
+                  EditNotification()
+                }} to="/profile">
                   <UserProfile width={"60px"} height={"60px"}/>
                 </Link>
               ) : (
