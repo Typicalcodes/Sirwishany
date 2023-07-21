@@ -39,7 +39,7 @@ router.get("/fetchAddress", async (req, res) => {
     try {
       const fu = await user.find({ phoneNo: req.session.user.data[0].phoneNo });
 
-      res.send({loggedin: true, data: fu[0].addresses});
+      res.send({loggedin: true, data: fu[0].addresses, userId: fu[0]._id});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

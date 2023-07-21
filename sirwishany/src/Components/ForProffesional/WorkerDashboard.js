@@ -10,7 +10,7 @@ const WorkerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [statuschecked, setStatuschecked] = useState(null);
   const socket = io.connect("http://localhost:3000");
-
+  const [category, setCategory] = useState("current");
   const [jobData, setJobData] = useState([]);
   const myarray = [];
   const setProfile = async () => {
@@ -22,7 +22,7 @@ const WorkerDashboard = () => {
       credentials: "include",
     });
     const json = await response.json();
-    
+
     if (json.loggedin === false) {
       navigate({ pathname: "/login", search: `?page=m` });
     }
@@ -50,28 +50,29 @@ const WorkerDashboard = () => {
     setJobData(json.user[0].bookings);
     setLoading(false);
   };
+
+  //ANCHOR - USER Setting
   useEffect(() => {
     setProfile();
   }, []);
 
   useEffect(() => {
-
     statusRef.current = status;
   }, [status]);
 
-
-
   // NOTE: Function for API of fectching the count of bookings
-  const checksize  = async () => {
-    if (user){
-      const response = await fetch(`http://localhost:3000/prof/checkcount/${user.user[0]._id}`,{
-        method  : "GET",
-    
-      })
-      const json = await response.json()
-         return json.qty
+  const checksize = async () => {
+    if (user) {
+      const response = await fetch(
+        `http://localhost:3000/prof/checkcount/${user.user[0]._id}`,
+        {
+          method: "GET",
+        }
+      );
+      const json = await response.json();
+      return json.qty;
     }
-  }
+  };
   const logout = async () => {
     const response = await fetch("http://localhost:3000/user/logout", {
       method: "GET",
@@ -100,44 +101,44 @@ const WorkerDashboard = () => {
     const json = await response.json();
   };
 
- 
-  useEffect(() => {
-
-  }, [jobData]);
+  useEffect(() => {}, [jobData]);
 
   const handleJobReceived = async (userdata) => {
     const trueuser = {
-      date : userdata.date + "T00:00:00.000Z",
-      time : userdata.time,
-      worktype :  userdata.worktype,
-      address : userdata.address,
-      subtype : userdata.subtype,
-      userid : userdata.userId
-    }
+      date: userdata.date + "T00:00:00.000Z",
+      time: userdata.time,
+      worktype: userdata.worktype,
+      address: userdata.address,
+      subtype: userdata.subtype,
+      userid: userdata.userId,
+    };
 
-    const response =  await checksize();
+    const response = await checksize();
     const tempdata = jobData;
-    console.log(trueuser)
-    if (tempdata.some(obj => { return obj.date === trueuser.date && obj.time === trueuser.time})){
-      console.log("same detected")
-    }else{
-    if (response && response <= 10){
 
-    setJobData((prevState) => {
-      if (statusRef.current === "Active") {
-     
-        try {
-          return [...prevState, trueuser];
-        } catch (error) {
-          console.log(error);
-        }
-      } else if (statusRef.current === "Inactive") {
-        try {
-
-          return [...prevState];
-        } catch (error) {}
+    if (
+      tempdata.some((obj) => {
+        return obj.date === trueuser.date && obj.time === trueuser.time;
+      })
+    ) {
+      console.log("same detected");
+    } else {
+      if (response && response <= 10) {
+        setJobData((prevState) => {
+          if (statusRef.current === "Active") {
+            try {
+              return [...prevState, trueuser];
+            } catch (error) {
+              console.log(error);
+            }
+          } else if (statusRef.current === "Inactive") {
+            try {
+              return [...prevState];
+            } catch (error) {}
+          }
+        });
       }
-    })}};
+    }
   };
 
   // NOTE: useffect for adding the incoming jobs
@@ -148,9 +149,10 @@ const WorkerDashboard = () => {
       const message = "Professional Connected";
       socket.emit("join job", { data: socketid, message });
     }
- 
+
     socket.on("job received", (userdata) => {
-  
+      console.log(userdata, "reveived");
+      setProfile();
       handleJobReceived(userdata, status);
     });
     return () => {
@@ -158,33 +160,88 @@ const WorkerDashboard = () => {
     };
   }, [statusRef.current]);
 
-
-   // NOTE: On accepting job
-   const onAccept = (item) => {
+  // NOTE: On accepting job
+  const onAccept = async (item) => {
     console.log(item);
-    socket.emit("send message",{data: item.userId, message : item})
-  };
 
-  // NOTE: On Rejecting job   
-  const onReject = async (item)=>{
-    setJobData(jobData.filter(job => {return job !== item} ))
-    const body= {
-      item
-    }
-    const response = await fetch(`http://localhost:3000/prof/deletejob/${user.user[0]._id}`,{
-      method: "DELETE",
+    const chattype = {
+      date: item.date,
+      time: item.time,
+      worktype: item.worktype,
+    };
+    const data = {
+      customer: item.userId,
+      prof: user.user[0]._id,
+      chattype: chattype,
+    };
+
+    console.log(data);
+    socket.emit("send message", { data: item.userId, message: item });
+
+    const response = await fetch("http://localhost:3000/chat/findchat", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body)
-    })
-    console.log(response)
-  }
+      body: JSON.stringify(data),
+    });
+    const json = await response.json();
+    console.log(json);
+    //NOTE - api for changing accepted
+    const update = await fetch(
+      `http://localhost:3000/prof/updatejob/${user.user[0]._id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(chattype),
+      }
+    );
+    const jsonupdate = await update.json();
+    if (
+      jsonupdate.message.acknowledged === true &&
+      jsonupdate.message.modifiedCount > 0
+    ) {
+      setJobData(
+        jobData.filter((job) => {
+          return job !== item;
+        })
+      );
+      setProfile();
+    }
+    if (json.chatid) {
+      navigate({ pathname: "/chat", search: `?userid=${item.userId}&chatid=${json.chatid}` });
+    }
+  };
+
+  // NOTE: On Rejecting job
+  const onReject = async (item) => {
+    setJobData(
+      jobData.filter((job) => {
+        return job !== item;
+      })
+    );
+    const body = {
+      item,
+    };
+    const response = await fetch(
+      `http://localhost:3000/prof/deletejob/${user.user[0]._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+  };
+
+  useEffect(() => {}, [category]);
   return (
     <>
       {user && (
         <>
-     
           <section className="bg-white  pt-4 px-2">
             <section className="bg-white flex w-full items-center justify-between">
               <section className="flex items-center space-x-2">
@@ -234,61 +291,101 @@ const WorkerDashboard = () => {
             </section>
             <header className="text-left font-bold text-2xl py-4">Jobs</header>
             <section className="flex justify-around ">
-              <div className="text-lg font-bold text-[#020614] w-full text-center  ">
+              <div
+                onClick={() => {
+                  setCategory("current");
+                }}
+                className={`text-lg font-bold $ text-[#020614] ${
+                  category === "current" && "drop-shadow-md border-b-2"
+                } w-full text-center`}
+              >
                 Current
               </div>
-              <div className="text-lg font-bold text-[#020614] w-full text-center  ">
+              <div
+                onClick={() => {
+                  setCategory("previous");
+                }}
+                className={`text-lg font-bold text-[#020614] ${
+                  category === "previous" && "drop-shadow-md border-b-2"
+                }  w-full text-center `}
+              >
                 Previous
               </div>
             </section>
             {jobData &&
-              jobData.map((item, index) => {
-                return (
-                  <section key={index}>
-                    <div className=" border-2  border-[#6B84DD] rounded-md p-1 my-4 ">
-                      <span className="flex items-center justify-between">
-                        <div>
-                          <span className=" pr-2  font-semibold">Date :</span>
-                          <span className="font-medium">
-                            {item.date.split("T")[0]}
-                          </span>
+              jobData
+                .filter(
+                  (item) =>
+                    item.status ===
+                    (category === "current" ? "active" : "accepted")
+                )
+                .map((item, index) => {
+                  return (
+                    <section
+                      key={index}
+                      onClick={() => {
+                        if (item.status === "accepted") {
+                          navigate({
+                            pathname: "/chat",
+                            search: `?chatid=${item.userId}`,
+                          });
+                        }
+                      }}
+                    >
+                      <div className=" border-2  border-[#6B84DD] rounded-md p-1 my-4 ">
+                        <span className="flex items-center justify-between">
+                          <div>
+                            <span className=" pr-2  font-semibold">Date :</span>
+                            <span className="font-medium">
+                              {item.date.split("T")[0]}
+                            </span>
+                          </div>
+                          <div>
+                            <span className=" pr-2  font-semibold">Time :</span>
+                            <span className="font-medium">{item.time}</span>
+                          </div>
+                        </span>
+                        <span className=" pr-2  font-semibold">Work :</span>
+
+                        <span className="font-normal">{item.subtype}</span>
+                        <h1 className="  font-semibold  "> Address :</h1>
+                        <span>
+                          {item.address.place}, {item.address.city},
+                          {item.address.state}
+                        </span>
+                        <div className="flex justify-around">
+                          {item.status === "active" ? (
+                            <>
+                              <button
+                                onClick={() => {
+                                  onAccept(item);
+                                }}
+                                className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]"
+                              >
+                                <Tick width="30px" height="30px" />
+
+                                <span>Accept</span>
+                              </button>
+                              <button
+                                onClick={() => {
+                                  onReject(item);
+                                }}
+                                className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]"
+                              >
+                                <Cross width="20px" height="20px" />
+
+                                <span>Reject</span>
+                              </button>
+                            </>
+                          ) : (
+                            ""
+                          )}
                         </div>
-                        <div>
-                          <span className=" pr-2  font-semibold">Time :</span>
-                          <span className="font-medium">{item.time}</span>
-                        </div>
-                      </span>
-                      <span className=" pr-2  font-semibold">Work :</span>
-
-                      <span className="font-normal">{item.subtype}</span>
-                      <h1 className="  font-semibold  "> Address :</h1>
-                      <span>
-                        {item.address.place}, {item.address.city},
-                        {item.address.state}
-                      </span>
-                      <div className="flex justify-around">
-                        <button
-                          onClick={() => {
-                            onAccept(item);
-                          }}
-                          className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]"
-                        >
-                          <Tick width="30px" height="30px" />
-
-                          <span>Accept</span>
-                        </button>
-                        <button onClick={()=>{onReject(item)}} className="rounded-full text-base border-2 items-center flex space-x-1 font-semibold px-[8px] py-[4px]">
-                          <Cross width="20px" height="20px" />
-
-                          <span>Reject</span>
-                        </button>
                       </div>
-                    </div>
-                  </section>
-                );
-              })}
+                    </section>
+                  );
+                })}
           </section>
-        
         </>
       )}
     </>

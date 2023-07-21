@@ -14,6 +14,7 @@ const ibooking = new Schema({
   worktype: { type: String, required: true },
   subtype: { type: String   },
   status: { type: String, default: "active" },
+  userId: {type: String}
 });
 
 const Prof = new Schema({

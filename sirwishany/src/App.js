@@ -17,12 +17,10 @@ import WorkerDashboard from "./Components/ForProffesional/WorkerDashboard";
 import NewExperiments from "./Components/NewExperiments";
 import NewExperiments2 from "./Components/NewExperimentscopy";
 import Exper from "./Components/Exper";
+import Chatbox from "./Components/Chatbox/Chatbox";
 function App() {
   
-  const logn = useSelector((state) => state.loginopen);
-  useEffect(()=>{
-    
-  })
+  
   return (
     <div className=" bg-gray-100">
       <Routes>
@@ -41,6 +39,7 @@ function App() {
         <Route exact path="/newexper" Component={NewExperiments}/>
         <Route exact path="/newexper2" Component={NewExperiments2}/>        
         <Route exact path="/exper" Component={Exper}/>        
+        <Route exact path="/chat" Component={Chatbox}/>        
         </Routes>
       
     </div>

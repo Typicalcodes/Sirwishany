@@ -16,6 +16,7 @@ import Footer from "./Footer";
 
 const Navbar2 = () => {
   const notification = useSelector(state => state.editNotification)
+  const [efect,setEfect]=useState(false);
   const socket = io.connect("http://localhost:3000", {
     allowedHeaders: {
       "Access-Control-Allow-Origin": true,
@@ -72,25 +73,30 @@ const Navbar2 = () => {
     const json = await response.json();
   //console.log(json)
     if (json.loggedin === true){
+      if (!efect){
+      socket.emit("create room",(json.user._id ))}
          setUser(true)
-      console.log(json.user[0]._id);
-      socket.emit("create room",(json.user[0]._id ))
+      console.log( "socket connected "+ json.user._id);
+        setEfect(true)
     }
     setLoading(false);
     // console.log(user);
   };
   useEffect(() => {
-    setprofile();
-  }, []);
+    
+    if(!efect){
+      setprofile();
+    }
+  }, [efect]);
 
   //FIXME - receiving message
-  useEffect(()=>{
-    socket.on("received message", (data)=>{
+
+socket.on("received message", (data)=>{
       console.log(data)
       EditNotification();
       console.log(notification)
     })
-  })
+
   // on clicking item
   const onClickItem = async (name, state, id, services) => {
     await setshowInput(true);
@@ -109,7 +115,6 @@ const Navbar2 = () => {
   };
   return ( 
     <>
-       <button>Click me to change notif</button>
         <div className="space-y-[8px] px-[8px] pt-[8px] bg-white ">
           <div className="flex items-center justify-between ">
             <div className="flex flex-col">
@@ -120,14 +125,14 @@ const Navbar2 = () => {
                 Services at your Doorstep
               </span>
             </div>
-
-            <div>
+      
+              <div>
               <div className="text-green-500 "></div>
               {user ? (
                 <Link onClick={()=>{
                   EditNotification()
                 }} to="/profile">
-                  <UserProfile width={"60px"} height={"60px"}/>
+                  <UserProfile width={"60px"} height={"60px"} notif={notification}/>
                 </Link>
               ) : (
                 <Link
@@ -214,10 +219,7 @@ const Navbar2 = () => {
               />
             </div>
           </div>
-          
         </div>
-        
-  
     </>
   );
 };

@@ -20,7 +20,7 @@ const socketIO = require("socket.io");
 app.use(
   cors({
     origin: ["http://localhost:3001"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE"],
     credentials: true,
   })
 );
@@ -48,6 +48,7 @@ app.use("/choice", require("./Routes/Svgstore"));
 
 //worker
 app.use("/prof", require("./Routes/Workerroutes"));
+app.use("/chat", require("./Routes/ChatApi"));
 
 const server = http.createServer(app);
 const io = socketIO(server, {
@@ -85,15 +86,27 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
+
+
 //! for check login
 app.get("/user/login", async (req, res) => {
   if (req.session.user && req.session.user.type === "Consumer") {
-    console.log(req.session.user);
-    const userdata = await user.find({
-      phoneNo: req.session.user.data[0].phoneNo,
-    });
-    res.send({ loggedin: true, user: userdata });
-    console.log(userdata);
+ 
+    
+   await user.findOne({phoneNo: req.session.user.data[0].phoneNo}).populate('chat').exec((err,result)=>{
+      if (err) {
+        console.log("eror is ");
+      } else {
+        if(!result){
+          console.log("result not found")
+        } else {
+          console.log("result is ", result)
+          chatsf = result.chat
+          res.send({ loggedin: true, user: result , chats : result.chat});
+        }
+      
+      }
+    })
   } else {
     res.send({ loggedin: false });
   }
@@ -102,19 +115,22 @@ app.get("/user/login", async (req, res) => {
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  // Handle WebSocket messages
+  // NOTE: Handle WebSocket messages
   socket.on("booking", async (userData) => {
-    console.log("We get userdata", userData);
-
     try {
-      console.log(userData.tosend.worktype);
+      const dateiso = userData.tosend.date;
+      const datetru = dateiso + "T00:00:00.000+00:00";
+
       const response = await Prof.updateMany(
         {
           worktype: userData.tosend.worktype,
           "address.city": userData.tosend.address.city,
           "address.state": userData.tosend.address.state,
           status: "Active",
-          $expr : { $lt: [{$size : '$bookings'},11]}
+          $expr: { $lt: [{ $size: "$bookings" }, 10] },
+          bookings: {
+            $not: { $elemMatch: { date: datetru, time: userData.tosend.time } },
+          },
         },
         {
           $push: {
@@ -124,11 +140,12 @@ io.on("connection", (socket) => {
               worktype: userData.tosend.worktype,
               address: userData.tosend.address,
               subtype: userData.tosend.subtype,
+              userId: userData.tosend.userid,
             },
           },
         }
       );
- 
+
       const socketid = `${userData.tosend.worktype}${userData.tosend.address.city}${userData.tosend.address.state}`;
       socket.to(socketid).emit("job received", userData.tosend);
     } catch (error) {
@@ -139,15 +156,18 @@ io.on("connection", (socket) => {
   });
   socket.on("join job", ({ data, message }) => {
     socket.join(data);
-    console.log(data);
-    console.log(message);
   });
 
   socket.on("send message", ({ data, message }) => {
     let id = `"${data}${message}"`;
-    console.log(id);
-    console.log("received message", message + socket.id);
+    console.log("socket send runs ");
     socket.to(data).emit("received message", message);
+    console.log("receving message runs");
+  });
+
+  socket.on("create room", (userId) => {
+    socket.join(userId);
+    console.log("User Connected", userId);
   });
   //todo make a room with worktype city and state and make worker chat join the same user
   socket.on("disconnect", () => {
@@ -156,16 +176,6 @@ io.on("connection", (socket) => {
   });
 });
 
-app.post("/createchat", (req, res) => {
-  const customer = "Rohit";
-  const prof = "Arun";
-  try {
-    const response = user.find({
-      _id: customer,
-      chat: { $in: [{ customer, prof }] },
-    });
-  } catch (error) {}
-});
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

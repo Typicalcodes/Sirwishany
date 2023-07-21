@@ -10,13 +10,18 @@ const chats = new Schema({
   
 const chatdetail= new Schema({
     chatdate: {type: Date, default: Date.now},
-    chats
+    chats : [chats]
 })
-  
+
+const ibooking = new Schema({
+    date : {type: Date, required: true },
+    time : {type: String, required: true},
+    worktype : {type: String, required: true},
+  })
 const chatData = new Schema({
     customer: {type: String},
     prof : {type: String},
-    chatfile: [chatdetail]
+    chattype: ibooking
 });
 
 module.exports = mongoose.model("ChatData",chatData)

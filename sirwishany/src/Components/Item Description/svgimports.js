@@ -60,7 +60,8 @@ const AC = () => {
 };
 const UserProfile = (props) => {
   return (
-    <div className="drop-shadow-lg">
+    <div >
+
       <svg
         width={props.width}
         height={props.height}
@@ -69,7 +70,7 @@ const UserProfile = (props) => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <g id="SVGRepo_bgCarrier" strokeWidth="1" />
-
+       {props.notif && <circle className="bg-green-800" cx="20" cy="4" r="3" opacity="1" strokeWidth="3" fill="green"  />}
         <g
           id="SVGRepo_tracerCarrier"
           strokeLinecap="round"

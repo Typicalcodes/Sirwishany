@@ -7,6 +7,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
+  const [box,setBox]=useState("Bookings");
   const setprofile = async () => {
     const response = await fetch("http://localhost:3000/user/login", {
       method: "GET",
@@ -16,10 +17,12 @@ const Profile = () => {
       credentials: "include",
     });
     const json = await response.json();
-    //console.log(json);
+    console.log(json);
     if (json.loggedin === true) {
       await setUser(json);
-      //console.log(user);
+     // socket.emit("create room",(json.user._id ))
+  
+      
       setLoading(false);
     }else{
       setLoading(true)
@@ -70,15 +73,19 @@ const Profile = () => {
             </figure>
             <header>
               <h3 className="text-gray-900 text-xl font-bold p-2 ">
-                {user.user[0].name}
+                {user.user.name}
               </h3>
             </header>
             <span className="font-semibold mt-3 p-1">Phone No : </span>
-            <span>{user.user[0].phoneNo}</span>
+            <span>{user.user.phoneNo}</span>
           </section>
           <section className="bg-white mt-4">
-            <header className="font-bold text-xl drop-shadow-md">Bookings</header>
-            {user.user[0].bookings.map((item,index) => {
+            <div className="flex justify-around">
+            <header className="font-bold text-xl drop-shadow-md" onClick={()=>{setBox("Bookings")}}>Bookings</header>
+            <header className="font-bold text-xl drop-shadow-md" onClick={()=>{setBox("Chats")}}>Chats</header>
+            </div>
+            
+            {box === "Bookings" ? user.user.bookings.map((item,index) => {
               return (
                 <section key={index}>
                 <div className=" border-2  border-[#6B84DD] rounded-md p-1 my-2 items-center">
@@ -92,7 +99,29 @@ const Profile = () => {
                 
                 </section>
               );
-            })}
+            }) : user.chats.map((item,index)=>{
+              return (
+                <section key={index} onClick={()=>{ navigate({
+                  pathname: "/chat",
+                  search: `?userid=${item.prof}&chatid=${item._id}`,
+                })}}>
+                <div className=" border-2  border-[#6B84DD] rounded-md p-1 my-2 items-center">
+                  <span className="flex justify-between">
+                    <div>
+                  <span className=" pr-2 text-base font-medium ">Date : </span>
+                  <span className=" text-base font-medium">{item.chattype.date.split("T")[0]}</span>
+                  </div>
+                  <div>
+                  <span className=" pr-2 text-base font-medium ">Time : </span>
+                  <span className=" text-base font-medium">{item.chattype.time}</span>
+                  </div>
+                  </span> 
+                  <h1 className="font-bold text-lg">For Job of {item.chattype.worktype}</h1>
+                </div>
+                
+                </section>
+              );
+            }) } 
           </section>
         </section>
       )}

@@ -59,10 +59,11 @@ const Bookpage = () => {
     });
     const json = await response.json();
 
-    //console.log(json);
+    
+    console.log(json);
 
     if (json.loggedin === true) {
-      await setUser(json.data);
+      await setUser(json);
     } else if (json.loggedin === false) {
       navigate({ pathname: "/login", search: `?page=b` });
     }
@@ -173,8 +174,15 @@ const Bookpage = () => {
     },
     credentials: true,
   });
+  //SECTION - Receving messages
+  useEffect(()=>{
+    socket.on("received message", (data)=>{
+      console.log(data)
+    })
+  })
   const [finaldata, setFinaldata] = useState(null);
   const booknow = async () => {
+    
     if (selectedDate && selectedSlot && selectedAddress) {
       //console.log(selectedDate, selectedSlot, selectedAddress);
       const data = {
@@ -186,8 +194,9 @@ const Bookpage = () => {
           state: selectedAddress.state,
           city: selectedAddress.city,
         },
-        subtype: cattype
-
+        subtype: cattype,
+        userid : User.userId ? User.userId : "not any recieved"
+        
       };
      
       //console.log(data);
@@ -204,8 +213,9 @@ const Bookpage = () => {
       });
       const json = await response.json();
       //console.log(json);
-      await socket.emit("booking", {"tosend":data, "user":json.userid});
+      await socket.emit("booking", {"tosend":data});
     } else {
+
       toast.error("Fill Complete Information");
     }
   };
@@ -214,12 +224,21 @@ const Bookpage = () => {
   // Establish a WebSocket connection
 
   // Clean up the WebSocket connection on component unmount
+ useEffect(() => {
+
  
+   const today = new Date();
+   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+   const formattedTomorrow = tomorrow.toISOString().split("T")[0];
+   console.log(today.getTime())
+   document.getElementById("myDate").min = formattedTomorrow;
+
+ }, [])
+
   return (
     <>
       <Toaster toastOptions={{ duration: 2000 }} />
-
-      <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
         <section className="bg-white mx-auto px-2">
           <div className="flex items-center justify-center mt-2">
             <div className=" rounded-full">
@@ -251,6 +270,7 @@ const Bookpage = () => {
               id="myDate"
               name="myDate"
               onChange={selectingDate}
+
               className={`${
                 selectedDate
                   ? "border-2 border-[#6B84DD] font-semibold"
@@ -365,7 +385,7 @@ const Bookpage = () => {
             )}
             <section>
               {User &&
-                User.map((item, index) => {
+                User.data.map((item, index) => {
                   return (
                     <div
                       key={index}
@@ -392,6 +412,7 @@ const Bookpage = () => {
           </div>
         </section>
       </ThemeProvider>
+     
     </>
   );
 };

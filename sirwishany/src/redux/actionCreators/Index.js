@@ -30,4 +30,11 @@ const changeCategory=(category)=>{
     }
 }
 
-export {openlogin,changeCity,changeService,changeCategory};
+const editnotification=()=>{
+    return (dispatch)=>{
+        dispatch({
+            type: 'changenotif'
+        })
+    }
+}
+export {openlogin,changeCity,changeService,changeCategory, editnotification};

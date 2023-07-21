@@ -4,6 +4,7 @@ import io from "socket.io-client";
 const NewExperiments = () => {
   const [datavalue, setDatavalue] = useState(null);
   const [tomessage, setTomessage] = useState(null);
+  const [efect,setEfect]=useState(false);
   const [data, setData] = useState("electric");
   const socket = io.connect("http://localhost:3000");
   const sendmessage = (data, message)=>{
@@ -13,13 +14,21 @@ const NewExperiments = () => {
   useEffect(() => {
     // Establish a WebSocket connection
     const message = "sender joined"
-    const datae = "electrc"
+    const datae = "647acf1a9dd502069887ab00"
     // Listen for WebSocket messages
-    socket.emit("join job",{data: "electric", message});
-    
+    socket.emit("create room",(datae))
+    console.log("socket connected")
     // Clean up the WebSocket connection on component unmount
     
-  },[foreffect]);
+  },[efect]);
+
+    socket.on("received message", (data)=>{
+      console.log(data)
+
+    })
+  
+
+  
   return (
     <>
       {datavalue &&
