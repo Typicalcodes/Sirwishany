@@ -104,11 +104,11 @@ router.get("/checkcount/:id", async (req, res) => {
 router.post("/updatejob/:id", async (req, res) => {
   const { id } = req.params;
 
-  const { time, date } = req.body;
+  const { time, date, chatid } = req.body;
   try {
     const response = await Prof.updateOne(
       { _id: id, bookings: { $elemMatch: { time: time, date: date } } },
-      { $set: { "bookings.$.status": "accepted" } }
+      { $set: { "bookings.$.status": "accepted", "bookings.$.chatId":  chatid} }
     ).exec((err, result) => {
       if (err) {
         res.send({ message: err.message });

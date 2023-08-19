@@ -5,11 +5,8 @@ const Chatbox = () => {
   let [searchParams] = useSearchParams();
   let userid = searchParams.get("userid");
   let chatid = searchParams.get("chatid");
-  
-  //NOTE - Function for setting chats 
   const [chatData, setChatData] = useState(null)
   const setchats = async () => {
-    console.log(chatid ,userid);
     const response = await fetch(
       `http://localhost:3000/chat/fetchchat/${chatid}`,
       {
@@ -17,17 +14,35 @@ const Chatbox = () => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
-    const json = await response.json();
-    if (json){
-      setChatData(json)
-    }
-    console.log(json);
+    console.log(response);
   };
   useEffect(() => {
     setchats();
   }, []);
+
+  
+  const [chat, setChat] = useState(null)
+  const sendchat = async ()=>{
+    if (chat <1){
+      return
+    }
+    const data= {
+      message : chat,
+      chatuser: userid === chatData.message.prof ? chatData.message.customer : chatData.message.prof
+    }
+    console.log(data)
+    const response = await fetch(`http://localhost:3000/chat/sendchat/${chatid}`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    const json = await response.json();
+    console.log(json)
+  }
 
   const today = new Date("2023-07-22 ");
   const tomorrow = new Date("2023-07-23");
@@ -79,29 +94,6 @@ const Chatbox = () => {
       time: "2023-12-30T01:28:26.949Z",
     },
   ]);
-
-//NOTE - Function for sending chats
-
-  const [chat, setChat] = useState(null)
-  const sendchat = async ()=>{
-    if (chat <1){
-      return
-    }
-    const data= {
-      message : chat,
-      chatuser: userid === chatData.message.prof ? chatData.message.customer : chatData.message.prof
-    }
-    console.log(data)
-    const response = await fetch(`http://localhost:3000/chat/sendchat/${chatid}`,{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-    const json = await response.json();
-    console.log(json)
-  }
   const datefinder = () => {
     let todate = new Date(Date.now());
     console.log(typeof todate);
@@ -114,6 +106,7 @@ const Chatbox = () => {
     const utcDate = new Date(isoDateString);
     console.log(utcDate);
   };
+
   const utcDate = new Date(chatarray[0].time);
   const day = utcDate.getUTCDate();
   const month = utcDate.getUTCMonth();
@@ -125,7 +118,7 @@ const Chatbox = () => {
   return (
     <><section className="px-2 bg-white">
       <header className="text-green-600 font-semibold font-merri">
-        Hter chat id for the impor {chatid}
+        the chat data is shown here
       </header>
       <div></div>
       <button
@@ -138,7 +131,7 @@ const Chatbox = () => {
       </button>
 
       {chatarray.map((item, index) => {
-        let counter = 1;
+        let counter = 1
         const utcDate = new Date(item.time);
         const day = utcDate.getUTCDate();
         const month = utcDate.getUTCMonth();
@@ -163,10 +156,8 @@ const Chatbox = () => {
         ;
       })}
       <section className="flex px-2 mx-2 fixed bottom-1 right-1  left-1 justify-center items-center">
-        <input type="text" onChange={(event)=>{
-          setChat(event.target.value)
-        }} className=" rounded-3xl pl-4 text-base w-ful font-semibold p-2 border-4 border-[#6B84DD]   " />
-        <button onClick={()=>{sendchat()}} className=" border-2 mx-2 rounded-3xl p-1 bg-[#6B84DD] text-white">
+        <input type="text" className=" rounded-3xl pl-4 text-base w-ful font-semibold p-2 border-4 border-[#6B84DD]   " />
+        <button onClick={()=>{console.log("First chat send")}} className=" border-2 mx-2 rounded-3xl p-1 bg-[#6B84DD] text-white">
         <Sendicon/>
         </button>
       </section>

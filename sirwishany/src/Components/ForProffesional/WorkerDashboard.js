@@ -168,6 +168,7 @@ const WorkerDashboard = () => {
       date: item.date,
       time: item.time,
       worktype: item.worktype,
+      
     };
     const data = {
       customer: item.userId,
@@ -187,6 +188,12 @@ const WorkerDashboard = () => {
     });
     const json = await response.json();
     console.log(json);
+    const chattypej = {
+      date: item.date,
+      time: item.time,
+      worktype: item.worktype,
+      chatid: json.chatid
+    };
     //NOTE - api for changing accepted
     const update = await fetch(
       `http://localhost:3000/prof/updatejob/${user.user[0]._id}`,

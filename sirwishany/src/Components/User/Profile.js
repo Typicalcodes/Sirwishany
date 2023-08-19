@@ -81,8 +81,8 @@ const Profile = () => {
           </section>
           <section className="bg-white mt-4">
             <div className="flex justify-around">
-            <header className="font-bold text-xl drop-shadow-md" onClick={()=>{setBox("Bookings")}}>Bookings</header>
-            <header className="font-bold text-xl drop-shadow-md" onClick={()=>{setBox("Chats")}}>Chats</header>
+            <header className={`font-bold w-full text-center text-xl drop-shadow-md ${box === "Bookings" && "border-b-2 "}`} onClick={()=>{setBox("Bookings")}}>Bookings</header>
+            <header className={`font-bold w-full text-center text-xl drop-shadow-md ${box === "Chats" && "border-b-2"}`} onClick={()=>{setBox("Chats")}}>Chats</header>
             </div>
             
             {box === "Bookings" ? user.user.bookings.map((item,index) => {

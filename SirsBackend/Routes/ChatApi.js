@@ -15,8 +15,37 @@ router.get("/findid", async (req,res)=>{
       res.send({chat:result})
     })
   })
-  
-  router.post("/findchat", async (req, res) => {
+
+router.get("/fetchchat/:id",async (req,res)=>{
+//about : id feild here is the chatid 
+  const {id} = req.params
+  console.log(id)
+  try {
+   const response = await ChatData.findById({_id: id})
+      if (!response){
+        res.send({message: "resiult nahi aya"}) 
+      }else {
+        res.send({message: response})
+      }
+  } catch (error) {
+    res.send({message: error.message})
+  }
+})
+
+router.post("/sendchat/:id",async (req,res)=>{
+  const {id}= req.params
+  const data = req.body
+  console.log(data)
+  try {
+    const response = await ChatData.findByIdAndUpdate(id,{$push : {chatdetail : data}})
+    if(response){
+      res.send({message: response})
+    }
+  } catch (error) {
+    res.send({message : error})
+  }
+})
+router.post("/findchat", async (req, res) => {
     const  {customer,prof,chattype} = req.body
     try {
         const response = await user.findOne({_id: customer}).populate('chat').exec(async (err,result)=>{
@@ -27,12 +56,16 @@ router.get("/findid", async (req,res)=>{
           return 0
         }
         const ispresent = result.chat.find(chat => chat.customer === customer && chat.prof === prof);
-        if(ispresent !== undefined){
+        
+
+        const newchatfor = ispresent.chattype.date.toISOString();
+      
+        if(ispresent !== undefined  && newchatfor === chattype.date && ispresent.chattype.time === chattype.time){
           res.send({chatid : ispresent._id})
         }else {
           const data ={
-            customer: "647f67146b7421de54f60e9a",
-            prof: "6494906adfd28119d11666e2",
+            customer: customer,
+            prof: prof,
             chattype
           };
           const newchat= new ChatData(data);
@@ -43,7 +76,7 @@ router.get("/findid", async (req,res)=>{
               console.error(err);
               return;
             }
-            console.log("document is saved", updateduser);
+      
             res.send({chatid : newchat._id})
           });
         }
