@@ -43,8 +43,9 @@ router.post("/sendchat/:id",async (req,res)=>{
     }
   } catch (error) {
     res.send({message : error})
-  }
-})
+  }   
+})    
+      
 router.post("/findchat", async (req, res) => {
     const  {customer,prof,chattype} = req.body
     try {
@@ -57,9 +58,9 @@ router.post("/findchat", async (req, res) => {
         }
         const ispresent = result.chat.find(chat => chat.customer === customer && chat.prof === prof);
         
-
+        
         const newchatfor = ispresent.chattype.date.toISOString();
-      
+        
         if(ispresent !== undefined  && newchatfor === chattype.date && ispresent.chattype.time === chattype.time){
           res.send({chatid : ispresent._id})
         }else {

@@ -28,7 +28,6 @@ const Chatbox = () => {
   useEffect(() => {
     setchats();
   }, []);
-
   const today = new Date("2023-07-22 ");
   const tomorrow = new Date("2023-07-23");
   const tomorday = new Date("2023-07-25");
@@ -80,7 +79,7 @@ const Chatbox = () => {
     },
   ]);
 
-//NOTE - Function for sending chats
+  //NOTE - Function for sending chats
 
   const [chat, setChat] = useState(null)
   const sendchat = async ()=>{

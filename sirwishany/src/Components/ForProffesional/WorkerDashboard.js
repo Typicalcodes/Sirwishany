@@ -202,7 +202,7 @@ const WorkerDashboard = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(chattype),
+        body: JSON.stringify(chattypej),
       }
     );
     const jsonupdate = await update.json();
