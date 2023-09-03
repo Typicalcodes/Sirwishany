@@ -334,7 +334,7 @@ const WorkerDashboard = () => {
                         if (item.status === "accepted") {
                           navigate({
                             pathname: "/chat",
-                            search: `?chatid=${item.userId}`,
+                            search: `?userid=${item.userId}&chatid=${item.chatId}`,
                           });
                         }
                       }}

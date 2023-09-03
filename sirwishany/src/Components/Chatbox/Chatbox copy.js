@@ -149,7 +149,7 @@ const Chatbox = () => {
                 item.chatuser === "user1" ? "text-right" : "text-left"
               } w-full my-4`}
             >
-              <span className="px-1 py-1 border-2 rounded-md border-[#6B84DD] my-1">{item.message}</span>
+              <span className="px-1 py-1 border-2 rounded-md border-[#6B84DD] my-1"></span>
             </section>
           </div>
         )
